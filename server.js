@@ -125,18 +125,10 @@ app.post('/create-cname-record', async (req, res) => {
     }
 });
 
-// Menggunakan path.join(__dirname, '..', 'nama_file')
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'index.html'));
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.get('/wanz.js', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'wanz.js'));
-});
-
-app.get('/style.css', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'style.css'));
-});
 
 // Endpoint API Dukun
 app.get('/dukun', async (req, res) => {
@@ -144,7 +136,7 @@ app.get('/dukun', async (req, res) => {
 
     if (!text || text.trim() === "") {
         return res.status(400).json({
-            creator: "API Dukun",
+            creator: "TANIA X WANZOFC",
             result: false,
             message: "Tolong tambahkan pertanyaan setelah parameter 'content'.",
             data: null
@@ -162,7 +154,7 @@ app.get('/dukun', async (req, res) => {
             data: botResponse
         });
     } catch (error) {
-        console.error("Error API Dukun:", error.message);
+        console.error("Error wanz:", error.message);
         res.status(500).json({
             creator: "WANZOFC X TANIA",
             result: false,
