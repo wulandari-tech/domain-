@@ -3,8 +3,6 @@ const path = require('path');
 const axios = require('axios');
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-// Konfigurasi Cloudflare (Hardcoded - NOT RECOMMENDED FOR PRODUCTION)
 const cloudflare = [
     {
         name: "domain1",
@@ -38,29 +36,22 @@ const cloudflare = [
     },
     {
         name: "domain6",
-       zone: "9876543210abcdefghijk1234567890mn",
-        api: "1234567890abcdefghijkmnopqrstuvwxyz",
-       tld: "domain-test.co"
+       zone: "4a077141990a60819c8a7e3ad006104c",
+        api: "bAJeTExSyN5EZPxRkLgLGMRwdzpijxugZBS3WCXz",
+       tld: "alfiansyah.xyz"
     },
 ];
-
-// Middleware untuk memparsing body permintaan JSON
 app.use(express.json());
-
-// Fungsi untuk membuat DNS Record (A atau CNAME) di Cloudflare
 async function createDnsRecord(type, name, content, proxied, domainName) {
     const recordType = type.toUpperCase();
     if (!['A', 'CNAME'].includes(recordType)) {
         throw new Error("Tipe DNS record tidak valid. Harus 'A' atau 'CNAME'.");
     }
-
     const selectedDomain = cloudflare.find(domain => domain.name === domainName);
     if (!selectedDomain) {
         throw new Error(`Domain dengan nama ${domainName} tidak ditemukan`);
     }
-
     const recordName = `${name.replace(/[^a-z0-9.-]/gi, "")}.${selectedDomain.tld}`;
-
     try {
         const response = await axios.post(
             `https://api.cloudflare.com/client/v4/zones/${selectedDomain.zone}/dns_records`,
@@ -69,7 +60,7 @@ async function createDnsRecord(type, name, content, proxied, domainName) {
                 name: recordName,
                 content: content,
                 ttl: 3600,
-                proxied: proxied === 'true', // Ensure proxied is a boolean
+                proxied: proxied === 'true',
             },
             {
                 headers: {
@@ -78,7 +69,6 @@ async function createDnsRecord(type, name, content, proxied, domainName) {
                 },
             }
         );
-
       if (response.data.success) {
           const result = response.data.result;
            return {
@@ -92,17 +82,12 @@ async function createDnsRecord(type, name, content, proxied, domainName) {
       } else {
          let error = response.data?.errors?.[0]?.message || response.data?.errors || "Unknown Cloudflare API error";
             throw new Error(error);
-       }
-
-
+      }
     } catch (error) {
          let errorMessage = error.response?.data?.errors?.[0]?.message || error.response?.data?.errors || error.message || error.response?.data || error.response || error;
        throw new Error(`Cloudflare API error: ${String(errorMessage)}`);
     }
 }
-
-
-// Endpoint untuk membuat subdomain A record
 app.post('/create-a-record', async (req, res) => {
     const { host, ip, domainName, proxied } = req.body;
 
@@ -118,8 +103,6 @@ app.post('/create-a-record', async (req, res) => {
         res.status(500).json({ success: false, error: error.message });
     }
 });
-
-// Endpoint untuk membuat subdomain CNAME record
 app.post('/create-cname-record', async (req, res) => {
     const { host, target, domainName, proxied } = req.body;
 
@@ -135,14 +118,9 @@ app.post('/create-cname-record', async (req, res) => {
         res.status(500).json({ success: false, error: error.message });
     }
 });
-
-
-// Endpoint utama untuk mengirim index.html
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
-
-// Jalankan server
 app.listen(PORT, () => {
     console.log(`Server berjalan di http://localhost:${PORT}`);
 });
