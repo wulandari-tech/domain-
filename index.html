@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-      <style>
+    <style>
         body {
             font-family: sans-serif;
-            margin: 0; /* Menghilangkan margin default body */
+            margin: 0;
             background-color: #f4f4f4;
             color: #333;
         }
@@ -37,11 +37,9 @@
             display: block;
             transition: 0.3s;
         }
-
         .sidebar a:hover {
             color: #f1f1f1;
         }
-
         .sidebar .closebtn {
             position: absolute;
             top: 0;
@@ -58,9 +56,9 @@
             padding: 10px 15px;
             border: none;
             position: fixed;
-             margin: 10px;
+            margin: 10px;
             top: 0;
-           z-index: 100;
+            z-index: 100;
             left: 0;
         }
         .openbtn:hover {
@@ -69,7 +67,7 @@
         .main-content {
             padding: 20px;
         }
-        form {
+         form {
             max-width: 600px;
             margin: 20px auto;
             padding: 20px;
@@ -97,7 +95,6 @@
             border-radius: 4px 0 0 4px;
             box-sizing: border-box;
         }
-
         .input-group button {
            background-color: #007bff;
              color: white;
@@ -111,7 +108,7 @@
         .input-group button:hover{
            background-color: #0056b3;
         }
-       button[type="submit"] {
+        button[type="submit"] {
             background-color: #007bff;
             color: white;
             padding: 10px 15px;
@@ -142,14 +139,13 @@
             white-space: pre-wrap;
             word-break: break-word;
         }
-
         #result p {
             margin-bottom: 10px;
         }
         .success-message {
             color: green;
         }
-         .error-message {
+        .error-message {
              color: red;
             }
         @media (min-width: 768px) {
@@ -159,34 +155,34 @@
             #result {
                 grid-column: 1 / 3;
             }
-         }
+        }
     </style>
 </head>
 <body>
     <div id="mySidebar" class="sidebar">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
-         <a href="https://wanzofc.xyz" target="_blank"><i class="fas fa-home"></i>Home</a>
-
+        <a href="https://wanzofc.xyz" target="_blank"><i class="fas fa-home"></i>Home</a>
     </div>
     <button class="openbtn" onclick="openNav()">☰</button>
-
-
     <div class="main-content">
-         <h1>CREATE SUBDOMAIN FREE BY WANZOFC</h1></h1>
+        <h1>CREATE SUBDOMAIN FREE BY WANZOFC</h1>
         <form id="subdomainForm">
             <label for="host">SUBDOMAIN:</label>
-                <div class="input-group">
+            <div class="input-group">
                 <input type="text" id="host" name="host" required>
-                  <button type="button"  onclick="copyInput('host')"><i class="fa fa-copy"></i></button>
-                  </div>
-
-
-            <label for="ip">IP ADDRESS:</label>
-                <div class="input-group">
-                <input type="text" id="ip" name="ip" required>
-                   <button type="button" onclick="copyInput('ip')"><i class="fa fa-copy"></i></button>
-                </div>
-            <button type="submit">CREATE</button>
+                <button type="button"  onclick="copyInput('host')"><i class="fa fa-copy"></i></button>
+            </div>
+            <label for="ip">IP ADDRESS/CNAME:</label>
+            <div class="input-group">
+                <input type="text" id="target" name="target" required placeholder="IP Address or CNAME Target">
+                <button type="button" onclick="copyInput('target')"><i class="fa fa-copy"></i></button>
+            </div>
+            <label for="type">TYPE:</label>
+            <select id="type" name="type">
+                <option value="A">A Record (IP Address)</option>
+                <option value="CNAME">CNAME Record</option>
+            </select>
+           <button type="submit">CREATE</button>
              <div id="result">
                 <label>HASIL:</label>
                 <div id="response"></div>
@@ -194,16 +190,16 @@
         </form>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
     <script>
-       function openNav() {
+        function openNav() {
             document.getElementById("mySidebar").style.width = "250px";
         }
 
         function closeNav() {
             document.getElementById("mySidebar").style.width = "0";
         }
-           function copyInput(inputId) {
+          function copyInput(inputId) {
                 const input = document.getElementById(inputId);
                 const btnCopy = document.querySelector(`[onclick="copyInput('${inputId}')"]`)
                   if (input) {
@@ -220,7 +216,7 @@
                         });
                 }
         }
-        function getStoredSubdomains() {
+         function getStoredSubdomains() {
             try {
                 const storedData = localStorage.getItem('subdomains');
                  return storedData ? JSON.parse(storedData) : [];
@@ -228,8 +224,8 @@
                    console.error("Error retrieving from localStorage:", error);
                    return [];
             }
-                                   }
-        function saveSubdomain(subdomainData) {
+         }
+         function saveSubdomain(subdomainData) {
             const subdomains = getStoredSubdomains();
             subdomains.push(subdomainData);
                try{
@@ -238,31 +234,31 @@
                  console.error("Error saving to localStorage:", error);
                }
 
-           
-        }
+         }
         document.getElementById('subdomainForm').addEventListener('submit', async function(event) {
             event.preventDefault();
 
             const host = document.getElementById('host').value;
-            const ip = document.getElementById('ip').value;
+            const target = document.getElementById('target').value;
+           const type = document.getElementById('type').value;
 
             const responseDiv = document.getElementById('response');
            responseDiv.innerHTML = 'Loading ...';
 
             try {
-                const response = await fetch('/create-subdomain', {
+               const response = await fetch('/create-subdomain', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ host, ip })
+                  body: JSON.stringify({ host, target, type })
                 });
+                const data = await response.json();
 
-                 const data = await response.json();
-                  if (response.ok) {
-                   const message = data.message || "Subdomain created successfully";
+                 if (response.ok) {
+                      const message = data.message || "Subdomain created successfully";
                     responseDiv.innerHTML = `<p class="success-message">${message}</p><pre>${JSON.stringify(data.data, null, 2)}</pre>`;
-                       saveSubdomain({host, ip, data: data.data,message:message});
+                   saveSubdomain({host, target, type , data: data.data,message:message});
                   } else {
                       responseDiv.innerHTML = `<p class="error-message">Error: ${data.error}</p>`;
                   }
