@@ -45,6 +45,7 @@ const cloudflare = [
 
 app.use(express.json());
 
+
 async function createDnsRecord(type, name, content, proxied, domainName) {
     const recordType = type.toUpperCase();
     if (!['A', 'CNAME'].includes(recordType)) {
@@ -96,7 +97,7 @@ app.post('/create-a-record', async (req, res) => {
     const { host, ip, domainName, proxied } = req.body;
 
     if (!host || !ip || !domainName) {
-        return res.status(400).json({ success: false, message: "Host, IP, dan Domain wajib diisi.", data: null });
+        return res.status(400).json({ success: false, error: "Host, IP, dan Domain wajib diisi." });
     }
 
     try {
@@ -104,7 +105,7 @@ app.post('/create-a-record', async (req, res) => {
         res.json({ success: true, message: 'A record berhasil dibuat', data: result });
     } catch (error) {
         console.error("Error saat membuat A record:", error);
-        res.status(500).json({ success: false, message: error.message, data: null });
+        res.status(500).json({ success: false, error: error.message });
     }
 });
 
@@ -112,7 +113,7 @@ app.post('/create-cname-record', async (req, res) => {
     const { host, target, domainName, proxied } = req.body;
 
     if (!host || !target || !domainName) {
-        return res.status(400).json({ success: false, message: "Host, Target, dan Domain wajib diisi.", data: null });
+        return res.status(400).json({ success: false, error: "Host, Target, dan Domain wajib diisi." });
     }
 
     try {
@@ -120,7 +121,7 @@ app.post('/create-cname-record', async (req, res) => {
         res.json({ success: true, message: 'CNAME record berhasil dibuat', data: result });
     } catch (error) {
         console.error("Error saat membuat CNAME record:", error);
-        res.status(500).json({ success: false, message: error.message, data: null });
+        res.status(500).json({ success: false, error: error.message });
     }
 });
 
@@ -128,52 +129,12 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Endpoint API Meta AI
-app.get('/metaai', async (req, res) => {
-    const query = req.query.query;
-
-    if (!query || query.trim() === "") {
-        return res.status(400).json({
-            creator: "API Meta AI",
-            result: false,
-            message: "Tolong tambahkan pertanyaan setelah parameter 'query'.",
-            data: null
-        });
-    }
-    try {
-        const apiUrl = `https://api.siputzx.my.id/api/ai/metaai?query=${encodeURIComponent(query)}`;
-        const apiResponse = await axios.get(apiUrl);
-          if (apiResponse.data && apiResponse.data.result === true && apiResponse.data.data) {
-            res.json({
-              creator: "WANZOFC X TANIA",
-                result: true,
-                message: "berhasil",
-                data: apiResponse.data.data
-            });
-        } else {
-           res.status(500).json({
-              creator: "WANZOFC X TANIA",
-               result: false,
-               message: "Gagal memproses permintaan Meta AI.",
-              data: null
-            });
-        }
-    } catch (error) {
-        console.error("Error API Meta AI:", error.message);
-          res.status(500).json({
-             creator: "WANZOFC X TANIA",
-             result: false,
-             message: "Maaf, Meta AI sedang ada gangguan. Coba lagi nanti.",
-              data: null
-        });
-    }
-});
 
 // Endpoint API Dukun
 app.get('/dukun', async (req, res) => {
-    const content = req.query.content;
+    const text = req.query.content;
 
-    if (!content || content.trim() === "") {
+    if (!text || text.trim() === "") {
         return res.status(400).json({
             creator: "API Dukun",
             result: false,
@@ -183,84 +144,22 @@ app.get('/dukun', async (req, res) => {
     }
 
     try {
-        const apiUrl = `https://api.siputzx.my.id/api/ai/dukun?content=${encodeURIComponent(content)}`;
+        const apiUrl = `https://api.siputzx.my.id/api/ai/dukun?content=${encodeURIComponent(text)}`;
         const apiResponse = await axios.get(apiUrl);
-
-        if (apiResponse.data && apiResponse.data.result === true) {
-           
-            const responseData = {
-               creator: "WANZOFC X TANIA",
-                result: true,
-                ...apiResponse.data
-            };
-           res.json(responseData);
-        } else {
-             res.status(500).json({
+        const botResponse = apiResponse.data?.data || "Maaf, saya tidak bisa menjawab saat ini.";
+        res.json({
             creator: "WANZOFC X TANIA",
-               result: false,
-               message: "Gagal memproses permintaan Dukun.",
-                data: null
-            });
-        }
+            result: true,
+            message: "sebut nama kamu",
+            data: botResponse
+        });
     } catch (error) {
         console.error("Error API Dukun:", error.message);
-       res.status(500).json({
+        res.status(500).json({
             creator: "WANZOFC X TANIA",
             result: false,
             message: "Maaf, dukun sedang bermeditasi. Coba lagi nanti.",
             data: null
-        });
-    }
-});
-
-
-// Endpoint VCC Generator
-app.get('/vcc-generator', async (req, res) => {
-  const type = req.query.type;
-  const count = parseInt(req.query.count, 10) || 1;
-
-    if (!type || type.trim() === "") {
-        return res.status(400).json({
-           creator: "VCC Generator",
-            result: false,
-            message: "Tolong tambahkan tipe kartu setelah parameter 'type'.",
-            data: null
-        });
-    }
-    if (isNaN(count) || count <= 0) {
-         return res.status(400).json({
-            creator: "VCC Generator",
-            result: false,
-            message: "Parameter 'count' harus angka dan lebih dari 0.",
-            data: null
-        });
-    }
-    try {
-        const apiUrl = `https://api.siputzx.my.id/api/tools/vcc-generator?type=${encodeURIComponent(type)}&count=${count}`;
-        const apiResponse = await axios.get(apiUrl);
-        if (apiResponse.data && apiResponse.data.result === true && apiResponse.data.data) {
-          res.json({
-            creator: "WANZOFC X TANIA",
-            result: true,
-            message: "berhasil",
-            data: apiResponse.data.data
-          });
-        } else {
-            res.status(500).json({
-               creator: "WANZOFC X TANIA",
-               result: false,
-               message: "Gagal memproses permintaan VCC.",
-               data: null
-            });
-        }
-
-    } catch (error) {
-        console.error("Error VCC Generator:", error.message);
-          res.status(500).json({
-            creator: "WANZOFC X TANIA",
-            result: false,
-            message: "Maaf, VCC Generator sedang bermasalah. Coba lagi nanti.",
-              data: null
         });
     }
 });
