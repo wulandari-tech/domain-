@@ -173,6 +173,7 @@
         .domain-group {
             display: flex;
             align-items: center;
+            position: relative; /* Make domain-group relative for absolute positioning of options */
         }
 
         .domain-options-btn {
@@ -195,6 +196,37 @@
         .domain-options-btn:focus {
             outline: none; /* Menghilangkan outline default saat fokus */
             box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Efek fokus (opsional) */
+        }
+
+        .domain-options-container {
+            display: none; /* Hidden by default */
+            position: absolute;
+            top: 100%; /* Position below the domain group */
+            left: 0;
+            background-color: white;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            padding: 10px;
+            z-index: 1000; /* Ensure it's on top */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            width: 100%; /* Match width of domain group */
+            margin-top: 5px;
+        }
+
+        .domain-options-container ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .domain-options-container li {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .domain-options-container li:hover {
+            background-color: #f8f9fa;
         }
     </style>
 </head>
@@ -235,6 +267,16 @@
                    <option value="domain-test.co">domain-test.co</option>
                 </select>
                 <button type="button" class="domain-options-btn" onclick="domainOptionsClicked()">Opsi</button>
+                <div id="domainOptionsContainer" class="domain-options-container">
+                    <ul>
+                         <li>wanzofc.us.kg</li>
+                         <li>awan-attack.my.id</li>
+                         <li>awanbrayy.web.id</li>
+                         <li>behind-the-scenes.xyz</li>
+                         <li>wanzofc.xyz</li>
+                         <li>domain-test.co</li>
+                    </ul>
+                </div>
             </div>
 
              <label for="proxied">Proxy Status:</label>
@@ -378,7 +420,8 @@
         });
 
         function domainOptionsClicked() {
-            alert('Tombol Opsi Domain Diklik!'); // Ini hanya contoh, ganti dengan fungsi yang Anda inginkan
+            const domainOptionsContainer = document.getElementById('domainOptionsContainer');
+            domainOptionsContainer.style.display = domainOptionsContainer.style.display === 'none' ? 'block' : 'none';
         }
 
          toggleTargetInput();
