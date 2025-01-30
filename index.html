@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Buat Subdomain Cloudflare</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+        form {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: block;
+            margin: 10px auto;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #response {
+           margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #eee;
+            border-radius: 8px;
+        }
+        #response pre {
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        #response p {
+            margin-bottom: 10px;
+        }
+        .success-message {
+            color: green;
+        }
+         .error-message {
+             color: red;
+         }
+    </style>
+</head>
+<body>
+    <h1>Buat Subdomain Cloudflare</h1>
+    <form id="subdomainForm">
+        <label for="host">Subdomain:</label><br>
+        <input type="text" id="host" name="host" required><br>
+        <label for="ip">IP Address:</label><br>
+        <input type="text" id="ip" name="ip" required><br><br>
+        <button type="submit">Buat Subdomain</button>
+    </form>
+
+    <div id="response"></div>
+
+    <script>
+        document.getElementById('subdomainForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const host = document.getElementById('host').value;
+            const ip = document.getElementById('ip').value;
+
+            const responseDiv = document.getElementById('response');
+            responseDiv.innerHTML = 'Loading ...';
+
+            try {
+                const response = await fetch('/create-subdomain', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ host, ip })
+                });
+
+                 const data = await response.json();
+                  if (response.ok) {
+                    responseDiv.innerHTML = `<p class="success-message">${data.message}</p><pre>${JSON.stringify(data.data, null, 2)}</pre>`;
+                  } else {
+                      responseDiv.innerHTML = `<p class="error-message">Error: ${data.error}</p>`;
+                  }
+            } catch (error) {
+                responseDiv.innerHTML = `<p class="error-message">Terjadi kesalahan: ${error.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>
