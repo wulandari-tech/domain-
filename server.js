@@ -125,10 +125,18 @@ app.post('/create-cname-record', async (req, res) => {
     }
 });
 
+// Menggunakan path.join(__dirname, '..', 'nama_file')
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, '..', 'index.html'));
 });
 
+app.get('/wanz.js', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'wanz.js'));
+});
+
+app.get('/style.css', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'style.css'));
+});
 
 // Endpoint API Dukun
 app.get('/dukun', async (req, res) => {
