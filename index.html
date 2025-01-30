@@ -172,16 +172,18 @@
                 <input type="text" id="host" name="host" required>
                 <button type="button"  onclick="copyInput('host')"><i class="fa fa-copy"></i></button>
             </div>
-            <label for="ip">IP ADDRESS/CNAME:</label>
+             <label for="type">TYPE:</label>
+            <select id="type" name="type" onchange="toggleTargetInput()">
+                <option value="A">A Record (IP Address)</option>
+                <option value="CNAME">CNAME Record</option>
+            </select>
+            <div id="targetInputContainer">
+            <label for="target" id="targetLabel">IP ADDRESS/CNAME:</label>
             <div class="input-group">
                 <input type="text" id="target" name="target" required placeholder="IP Address or CNAME Target">
                 <button type="button" onclick="copyInput('target')"><i class="fa fa-copy"></i></button>
             </div>
-            <label for="type">TYPE:</label>
-            <select id="type" name="type">
-                <option value="A">A Record (IP Address)</option>
-                <option value="CNAME">CNAME Record</option>
-            </select>
+         </div>
            <button type="submit">CREATE</button>
              <div id="result">
                 <label>HASIL:</label>
@@ -235,6 +237,19 @@
                }
 
          }
+        function toggleTargetInput() {
+            const typeSelect = document.getElementById('type');
+            const targetLabel = document.getElementById('targetLabel');
+            const targetInput = document.getElementById('target');
+
+            if (typeSelect.value === 'A') {
+                targetLabel.textContent = 'IP ADDRESS:';
+                 targetInput.placeholder = 'IP Address';
+            } else if (typeSelect.value === 'CNAME') {
+                targetLabel.textContent = 'CNAME TARGET:';
+                targetInput.placeholder = 'CNAME Target';
+            }
+        }
         document.getElementById('subdomainForm').addEventListener('submit', async function(event) {
             event.preventDefault();
 
@@ -244,18 +259,31 @@
 
             const responseDiv = document.getElementById('response');
            responseDiv.innerHTML = 'Loading ...';
+            let apiUrl;
+            let requestBody;
+
+            if(type === 'A'){
+                apiUrl = '/create-a-record';
+                requestBody = { host, ip: target };
+            } else if (type === 'CNAME'){
+                apiUrl = '/create-cname-record';
+                requestBody = { host, target };
+            } else {
+                 responseDiv.innerHTML = '<p class="error-message">Tipe record tidak valid.</p>';
+                 return;
+            }
 
             try {
-               const response = await fetch('/create-subdomain', {
+               const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                  body: JSON.stringify({ host, target, type })
+                  body: JSON.stringify(requestBody)
                 });
                 const data = await response.json();
 
-                 if (response.ok) {
+                 if (response.ok && data.success) {
                       const message = data.message || "Subdomain created successfully";
                     responseDiv.innerHTML = `<p class="success-message">${message}</p><pre>${JSON.stringify(data.data, null, 2)}</pre>`;
                    saveSubdomain({host, target, type , data: data.data,message:message});
@@ -266,6 +294,7 @@
                 responseDiv.innerHTML = `<p class="error-message">Terjadi kesalahan: ${error.message}</p>`;
             }
         });
+         toggleTargetInput();
     </script>
 </body>
 </html>
