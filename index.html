@@ -1,54 +1,126 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Telegraph Subdomain by wanzofc</title>
-    <!-- Tailwind CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
+    <title>Buat Subdomain Cloudflare</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- SweetAlert2 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-    <!-- Simplebar -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.css"/>
-      <!-- Swiper -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
-    <!-- Choices.js -->
-     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
-
-    <style>
+      <style>
         body {
             font-family: sans-serif;
-            margin: 20px;
+            margin: 0; /* Menghilangkan margin default body */
             background-color: #f4f4f4;
             color: #333;
         }
+
         h1 {
             text-align: center;
             color: #007bff;
+            margin-top: 20px;
+        }
+
+         /* Sidebar styles */
+        .sidebar {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #343a40;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+
+        .sidebar a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 20px;
+            color: #818181;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            color: #f1f1f1;
+        }
+
+        .sidebar .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+            cursor: pointer;
+        }
+        .openbtn {
+            font-size: 20px;
+            cursor: pointer;
+            background-color: #111;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            position: fixed;
+             margin: 10px;
+            top: 0;
+           z-index: 100;
+            left: 0;
+        }
+        .openbtn:hover {
+            background-color: #444;
+        }
+
+        /* Form Styles */
+        .main-content {
+            padding: 20px;
         }
         form {
-            max-width: 400px;
+            max-width: 600px;
             margin: 20px auto;
             padding: 20px;
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: grid;
+            grid-gap: 10px;
+            grid-template-columns: 1fr;
         }
         label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
         }
-        input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
+        .input-group {
+            display: flex;
+            align-items: center;
+              margin-bottom: 10px;
+        }
+       .input-group input {
+             width: calc(100% - 22px);
+             padding: 10px;
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 4px 0 0 4px;
             box-sizing: border-box;
         }
-        button {
+
+        .input-group button {
+           background-color: #007bff;
+             color: white;
+             padding: 10px 15px;
+             border: none;
+             border-radius:0 4px 4px 0;
+              cursor: pointer;
+              transition: background-color 0.3s ease;
+
+         }
+        .input-group button:hover{
+           background-color: #0056b3;
+        }
+       button[type="submit"] {
             background-color: #007bff;
             color: white;
             padding: 10px 15px;
@@ -56,27 +128,31 @@
             border-radius: 4px;
             cursor: pointer;
             display: block;
-            margin: 10px auto;
+            margin: 10px 0;
             transition: background-color 0.3s ease;
+            width: 100%; /* Full width button */
         }
-        button:hover {
+        button[type="submit"]:hover {
             background-color: #0056b3;
         }
-        #response {
-           margin-top: 20px;
+         #result {
+            margin-top: 20px;
             padding: 15px;
             background-color: #f9f9f9;
             border: 1px solid #eee;
             border-radius: 8px;
+            overflow-x: auto;
         }
-        #response pre {
-            background-color: #f0f0f0;
+        #result pre {
+             background-color: #f0f0f0;
             padding: 10px;
             border-radius: 4px;
             overflow-x: auto;
             white-space: pre-wrap;
+            word-break: break-word;
         }
-        #response p {
+
+        #result p {
             margin-bottom: 10px;
         }
         .success-message {
@@ -85,330 +161,137 @@
          .error-message {
              color: red;
          }
+        /* Responsive layout for larger screens */
+        @media (min-width: 768px) {
+            form {
+                 grid-template-columns: 1fr 1fr;
+            }
+            #result {
+                grid-column: 1 / 3;
+            }
+         }
     </style>
 </head>
-<body class="bg-gray-100">
-    <h1 class="text-2xl font-bold text-center text-blue-500">create subdomain wanzofc</h1>
-    <form id="subdomainForm" class="max-w-sm mx-auto bg-white p-6 rounded shadow-md">
-        <label for="host" class="block font-bold mb-2">Subdomain:</label><br>
-        <input type="text" id="host" name="host" class="w-full p-2 mb-4 border rounded" required><br>
-        <label for="ip" class="block font-bold mb-2">IP Address:</label><br>
-        <input type="text" id="ip" name="ip" class="w-full p-2 mb-4 border rounded" required><br><br>
-        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded block mx-auto">CREATE</button>
-    </form>
+<body>
 
-    <div id="response" class="mt-8 p-4 bg-gray-50 border border-gray-200 rounded"></div>
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+         <a href="https://wanzofc.xyz" target="_blank"><i class="fas fa-home"></i> Home</a>
 
-   <!-- Swiper -->
-   <div class="swiper">
-        <div class="swiper-wrapper">
-          <div class="swiper-slide">Slide 1</div>
-          <div class="swiper-slide">Slide 2</div>
-          <div class="swiper-slide">Slide 3</div>
-        </div>
-        <div class="swiper-pagination"></div>
-        <div class="swiper-button-prev"></div>
-        <div class="swiper-button-next"></div>
-   </div>
+    </div>
 
-     <select id="mySelect">
-         <option value="1">Option 1</option>
-         <option value="2">Option 2</option>
-         <option value="3">Option 3</option>
-     </select>
+    <button class="openbtn" onclick="openNav()">☰ Menu</button>
 
-      <div data-simplebar style="max-height: 200px;">
-           <!-- Isi Konten yang memiliki Scrollbar -->
-           <p>Content .... </p>
-           <p>Content .... </p>
-           <p>Content .... </p>
-           <p>Content .... </p>
-           <p>Content .... </p>
-           <p>Content .... </p>
-       </div>
 
-    <header id="header" class="bg-white shadow-md py-4">
-      <div class="container mx-auto text-center">
-       <h1 class="text-2xl font-bold">Header</h1>
-         <nav>
-            <ul>
-              <li><a href="https://wanzofc.xyz">Home</a></li>
-              <li><a href="#">About</a></li>
-           </ul>
-        </nav>
-      </div>
-   </header>
-   <div id="lottie-container" class="w-32 h-32 mx-auto"></div>
+    <div class="main-content">
+         <h1>Buat Subdomain Cloudflare</h1>
+        <form id="subdomainForm">
+            <label for="host">Subdomain:</label>
+                <div class="input-group">
+                <input type="text" id="host" name="host" required>
+                  <button type="button"  onclick="copyInput('host')"><i class="fa fa-copy"></i></button>
+                  </div>
 
-    <!-- Axios -->
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <!-- Lodash -->
-    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
-     <!-- Date-fns -->
-    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.29.3/date-fns.min.js"></script>
-    <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <!-- Simplebar -->
-    <script src="https://cdn.jsdelivr.net/npm/simplebar@latest/dist/simplebar.min.js"></script>
-     <!-- GSAP -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-     <!-- Swiper -->
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-      <!-- Choices.js -->
-     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-    <!-- Lottie -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.12.2/lottie.min.js"></script>
-    <!-- LazySizes -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lazysizes/5.3.2/lazysizes.min.js"></script>
-    <!-- Headroom.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.12.0/headroom.min.js"></script>
+
+            <label for="ip">IP Address:</label>
+                <div class="input-group">
+                <input type="text" id="ip" name="ip" required>
+                   <button type="button" onclick="copyInput('ip')"><i class="fa fa-copy"></i></button>
+                </div>
+            <button type="submit">Buat Subdomain</button>
+             <div id="result">
+                <label>Result:</label>
+                <div id="response"></div>
+            </div>
+        </form>
+    </div>
+     <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+     <!-- Clipboard.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
+
     <script>
-           const selectElement = document.querySelector('#mySelect')
-           const choices = new Choices(selectElement);
-           const header = document.querySelector('#header');
-           const headroom = new Headroom(header);
-           headroom.init();
+    // Sidebar open and close
+       function openNav() {
+            document.getElementById("mySidebar").style.width = "250px";
+        }
 
-             const swiper = new Swiper('.swiper', {
-                 pagination: {
-                   el: '.swiper-pagination',
-                 },
-                 navigation: {
-                   nextEl: '.swiper-button-next',
-                   prevEl: '.swiper-button-prev',
-                 },
-               });
+        function closeNav() {
+            document.getElementById("mySidebar").style.width = "0";
+        }
+        // Function to copy input value
+           function copyInput(inputId) {
+                const input = document.getElementById(inputId);
+                const btnCopy = document.querySelector(`[onclick="copyInput('${inputId}')"]`)
+                  if (input) {
+                    navigator.clipboard.writeText(input.value).then(() => {
+                    btnCopy.innerHTML = '<i class="fas fa-check"></i>';
+                        setTimeout(()=>{
+                             btnCopy.innerHTML = '<i class="fa fa-copy"></i>';
+                        },1500)
+                        console.log('Text copied to clipboard');
+                    })
+                    .catch(err => {
+                         console.error('Failed to copy text: ', err);
+                          btnCopy.innerHTML = '<i class="fa fa-copy"></i>';
+                        });
+                }
+            }
 
+          // Fungsi untuk mengambil data yang tersimpan dari localStorage
+        function getStoredSubdomains() {
+            try {
+                const storedData = localStorage.getItem('subdomains');
+                 return storedData ? JSON.parse(storedData) : [];
+            } catch (error) {
+                   console.error("Error retrieving from localStorage:", error);
+                   return [];
+            }
+        }
+    
+        // Fungsi untuk menyimpan data ke localStorage
+        function saveSubdomain(subdomainData) {
+            const subdomains = getStoredSubdomains();
+            subdomains.push(subdomainData);
+               try{
+                    localStorage.setItem('subdomains', JSON.stringify(subdomains));
+                } catch (error) {
+                 console.error("Error saving to localStorage:", error);
+               }
 
-              const animationData = {
-                 "v": "5.12.2",
-                 "fr": 60,
-                  "ip": 0,
-                   "op": 120,
-                     "w": 256,
-                    "h": 256,
-                    "nm": "comp 1",
-                       "ddd": 0,
-                         "assets": [],
-                           "layers": [
-                             {
-                         "ddd": 0,
-                          "ind": 1,
-                          "ty": 4,
-                         "nm": "Shape Layer 1",
-                        "sr": 1,
-                       "ks": {
-                     "o": {
-                          "a": 0,
-                          "k": 100,
-                         "ix": 11
-                         },
-                      "r": {
-                       "a": 0,
-                         "k": 0,
-                           "ix": 10
-                          },
-                     "p": {
-                      "a": 0,
-                      "k": [
-                         128,
-                        128
-                       ],
-                        "ix": 2
-                           },
-                     "a": {
-                      "a": 0,
-                     "k": [
-                        0,
-                          0
-                        ],
-                         "ix": 1
-                           },
-                       "s": {
-                           "a": 0,
-                          "k": [
-                             100,
-                             100
-                           ],
-                       "ix": 6
-                       }
-                    },
-                    "ao": 0,
-                       "shapes": [
-                        {
-                           "ty": "gr",
-                              "it": [
-                               {
-                             "ty": "sh",
-                                  "ks": {
-                                      "a": 0,
-                                   "k": {
-                                   "i": [
-                                      0,
-                                   0,
-                                    0,
-                                    0
-                                    ],
-                                    "o": [
-                                   0,
-                                   0,
-                                   0,
-                                   0
-                                    ],
-                                  "v": [
-                                   [
-                                  -36.25,
-                                    -36.25
-                                    ],
-                                     [
-                                      -36.25,
-                                  36.25
-                                   ],
-                                   [
-                                      36.25,
-                                        36.25
-                                     ],
-                                   [
-                                      36.25,
-                                       -36.25
-                                   ]
-                                   ],
-                                   "c": true
-                                  },
-                              "ix": 1,
-                            "nm": "Path 1"
-                           },
-                           {
-                           "ty": "st",
-                            "c": {
-                                "a": 0,
-                                 "k": [
-                                   0.9372549019607843,
-                                    0.6745098039215687,
-                                  0,
-                                 1
-                                  ],
-                             "ix": 3
-                                  },
-                             "w": {
-                              "a": 0,
-                                 "k": 10,
-                                   "ix": 4
-                                   },
-                            "lc": 1,
-                             "lj": 1,
-                            "ml": 4,
-                               "nm": "Stroke 1",
-                                "ix": 2,
-                           "o": {
-                              "a": 0,
-                                  "k": 100,
-                                 "ix": 5
-                                }
-                             },
-                            {
-                             "ty": "fl",
-                           "c": {
-                                "a": 0,
-                                  "k": [
-                                   1,
-                                  1,
-                                 1,
-                                  1
-                                   ],
-                               "ix": 4
-                                  },
-                            "o": {
-                             "a": 0,
-                              "k": 0,
-                              "ix": 5
-                             },
-                            "nm": "Fill 1",
-                              "ix": 3
-                            }
-                         ],
-                        "nm": "Group 1",
-                          "ix": 1
-                          }
-                         ],
-                        "ip": 0,
-                          "op": 120,
-                          "st": 0,
-                           "bm": 0
-                        }
-                          ],
-                         "markers": []
-                         };
-              const animationContainer = document.getElementById('lottie-container');
-               lottie.loadAnimation({
-                container: animationContainer,
-                renderer: 'svg',
-                loop: true,
-                autoplay: true,
-                animationData: animationData,
-              });
-
+           
+        }
 
         document.getElementById('subdomainForm').addEventListener('submit', async function(event) {
             event.preventDefault();
 
             const host = document.getElementById('host').value;
             const ip = document.getElementById('ip').value;
-             try {
-                const response = await axios.post('/create-subdomain', { host, ip }, {
-                        headers: {'Content-Type': 'application/json'}
-                    })
-                const data = response.data
-                    if (response.status === 200) {
-                        Swal.fire({
-                           title: 'Success!',
-                           text: data.message,
-                           icon: 'success',
-                           confirmButtonText: 'OK'
-                           })
-                           .then(()=>{
-                                document.getElementById('response').innerHTML = `<pre>${JSON.stringify(data.data, null, 2)}</pre>`
-                             // Simpan data ke localStorage
-                             let savedSubdomains = JSON.parse(localStorage.getItem('subdomains') || '[]');
-                             savedSubdomains.push({ host, ip, timestamp: new Date().toISOString() });
-                             localStorage.setItem('subdomains', JSON.stringify(savedSubdomains));
-                            })
 
-                      } else {
-                           Swal.fire({
-                            title: 'Error!',
-                            text: data.error,
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                            })
-                      }
-                } catch (error) {
-                      Swal.fire({
-                        title: 'Error!',
-                        text: 'Terjadi kesalahan: ' + error.message,
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                      })
-                }
-        });
+            const responseDiv = document.getElementById('response');
+           responseDiv.innerHTML = 'Loading ...';
 
-        // Fungsi untuk menampilkan subdomain yang tersimpan (contoh)
-        function displaySavedSubdomains() {
-            const savedSubdomains = JSON.parse(localStorage.getItem('subdomains') || '[]');
-            if (savedSubdomains.length > 0) {
-                let html = '<h2>Subdomain Tersimpan:</h2>';
-                html += '<ul class="list-disc pl-5">';
-                savedSubdomains.forEach(sub => {
-                    html += `<li><strong>Host:</strong> ${sub.host}, <strong>IP:</strong> ${sub.ip}, <strong>Waktu:</strong> ${sub.timestamp}</li>`;
+            try {
+                const response = await fetch('/create-subdomain', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ host, ip })
                 });
-                html += '</ul>';
-                document.getElementById('response').innerHTML += html; // Menambahkan ke dalam div response
-            } else {
-                document.getElementById('response').innerHTML += "<p>Belum ada subdomain yang tersimpan.</p>"; // Menambahkan ke dalam div response
-            }
-        }
 
-        displaySavedSubdomains();
+                 const data = await response.json();
+                  if (response.ok) {
+                   const message = data.message || "Subdomain created successfully";
+                    responseDiv.innerHTML = `<p class="success-message">${message}</p><pre>${JSON.stringify(data.data, null, 2)}</pre>`;
+                       saveSubdomain({host, ip, data: data.data,message:message});
+                  } else {
+                      responseDiv.innerHTML = `<p class="error-message">Error: ${data.error}</p>`;
+                  }
+            } catch (error) {
+                responseDiv.innerHTML = `<p class="error-message">Terjadi kesalahan: ${error.message}</p>`;
+            }
+        });
     </script>
 </body>
 </html>
