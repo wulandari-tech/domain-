@@ -3,6 +3,7 @@ const path = require('path');
 const axios = require('axios');
 const app = express();
 const PORT = process.env.PORT || 3000;
+
 const cloudflare = [
     {
         name: "domain1",
@@ -41,7 +42,10 @@ const cloudflare = [
        tld: "alfiansyah.xyz"
     },
 ];
+
 app.use(express.json());
+
+
 async function createDnsRecord(type, name, content, proxied, domainName) {
     const recordType = type.toUpperCase();
     if (!['A', 'CNAME'].includes(recordType)) {
@@ -88,6 +92,7 @@ async function createDnsRecord(type, name, content, proxied, domainName) {
        throw new Error(`Cloudflare API error: ${String(errorMessage)}`);
     }
 }
+
 app.post('/create-a-record', async (req, res) => {
     const { host, ip, domainName, proxied } = req.body;
 
@@ -103,6 +108,7 @@ app.post('/create-a-record', async (req, res) => {
         res.status(500).json({ success: false, error: error.message });
     }
 });
+
 app.post('/create-cname-record', async (req, res) => {
     const { host, target, domainName, proxied } = req.body;
 
@@ -118,9 +124,46 @@ app.post('/create-cname-record', async (req, res) => {
         res.status(500).json({ success: false, error: error.message });
     }
 });
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
+
+
+// Endpoint API Dukun
+app.get('/dukun', async (req, res) => {
+    const text = req.query.content;
+
+    if (!text || text.trim() === "") {
+        return res.status(400).json({
+            creator: "API Dukun",
+            result: false,
+            message: "Tolong tambahkan pertanyaan setelah parameter 'content'.",
+            data: null
+        });
+    }
+
+    try {
+        const apiUrl = `https://api.siputzx.my.id/api/ai/dukun?content=${encodeURIComponent(text)}`;
+        const apiResponse = await axios.get(apiUrl);
+        const botResponse = apiResponse.data?.data || "Maaf, saya tidak bisa menjawab saat ini.";
+        res.json({
+            creator: "WANZOFC X TANIA",
+            result: true,
+            message: "sebut nama kamu",
+            data: botResponse
+        });
+    } catch (error) {
+        console.error("Error API Dukun:", error.message);
+        res.status(500).json({
+            creator: "WANZOFC X TANIA",
+            result: false,
+            message: "Maaf, dukun sedang bermeditasi. Coba lagi nanti.",
+            data: null
+        });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Server berjalan di http://localhost:${PORT}`);
 });
