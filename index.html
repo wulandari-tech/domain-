@@ -8,7 +8,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
-    <style>
+     <style>
         body {
             font-family: sans-serif;
             margin: 0;
@@ -129,7 +129,7 @@
             background-color: #0056b3;
         }
          #result {
-            display: none; 
+            display: none;
             margin-top: 20px;
             padding: 15px;
             background-color: #e9ecef;
@@ -137,7 +137,7 @@
             border-radius: 8px;
             overflow-x: auto;
         }
-        #result label { 
+        #result label {
             font-weight: bold;
             color: #343a40;
         }
@@ -280,13 +280,101 @@
             margin-right: 5px;
             vertical-align: middle;
         }
+         /* Styles for Dukun AI in sidebar */
+         .dukun-container {
+            padding: 10px;
+        }
 
+        .dukun-label {
+            display: block;
+             margin-bottom: 5px;
+            color: #fff;
+        }
+         .dukun-textarea {
+             width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+             background-color: #495057;
+             color: #fff;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box;
+             min-height: 80px;
+              resize: vertical;
+        }
+        .dukun-button {
+            background-color: #007bff;
+            color: white;
+            padding: 8px 12px;
+             border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+             width: 100%;
+             position: relative;
+              margin-bottom: 10px;
+        }
+
+        .dukun-button:hover {
+            background-color: #0056b3;
+        }
+        .dukun-result {
+             padding: 8px;
+           margin-top: 10px;
+             background-color: #e9ecef;
+            border: 1px solid #dee2e6;
+             border-radius: 4px;
+            overflow-x: auto;
+              display: none;
+           color: #343a40;
+        }
+        .dukun-result label {
+          font-weight: bold;
+           display: block;
+            margin-bottom: 10px;
+        }
+        .dukun-result pre{
+             background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+            border: 1px solid #ced4da;
+        }
+         .dukun-error-message {
+             color: red;
+            font-weight: bold;
+        }
+        /* Style untuk loading indicator pada tombol Dukun AI */
+        .dukun-button .loading-indicator {
+            margin-left: 0; /* Hapus margin agar spinner berada di tengah tombol */
+            margin-right: 5px;
+             position: absolute;
+            top: 50%;
+            left: 10px; /* Adjust as needed */
+            transform: translateY(-50%);
+            vertical-align: middle;
+        }
     </style>
 </head>
 <body>
     <div id="mySidebar" class="sidebar">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
-        <a href="https://wanzofc.xyz" target="_blank"><i class="fas fa-home"></i>Home</a>
+         <a href="https://wanzofc.xyz" target="_blank"><i class="fas fa-home"></i>Home</a>
+        <div class="dukun-container">
+            <label class="dukun-label" for="dukun-content">Tanya Dukun AI</label>
+            <textarea class="dukun-textarea" id="dukun-content" placeholder="Masukan pertanyaan..."></textarea>
+            <button class="dukun-button" id="ask-dukun">
+                 <span class="loading-indicator" id="dukunLoading"></span>
+                Tanya
+            </button>
+              <div class="dukun-result" id="dukun-result">
+              <label>Hasil Dukun AI</label>
+                 <div id="dukun-response"></div>
+             </div>
+        </div>
     </div>
     <button class="openbtn" onclick="openNav()">☰</button>
     <div class="main-content">
@@ -312,12 +400,12 @@
            </div>
             <label for="domainName">Domain:</label>
             <select id="domainName" name="domainName" class="form-select">
-                <option value="wanzofc.us.kg">wanzofc.us.kg</option>
-                <option value="awan-attack.my.id">awan-attack.my.id</option>
-                <option value="awanbrayy.web.id">awanbrayy.web.id</option>
-                <option value="behind-the-scenes.xyz">behind-the-scenes.xyz</option>
-                <option value="wanzofc.xyz">wanzofc.xyz</option>
-               <option value="alfiansyah.xyz">alfiansyah.xyz</option>
+                <option value="domain1">wanzofc.us.kg</option>
+                <option value="domain2">awan-attack.my.id</option>
+                <option value="domain3">awanbrayy.web.id</option>
+                <option value="domain4">behind-the-scenes.xyz</option>
+                <option value="domain5">wanzofc.xyz</option>
+               <option value="domain6">alfiansyah.xyz</option>
             </select>
              <label for="proxied">Proxy Status:</label>
             <select id="proxied" name="proxied" class="form-select">
@@ -504,6 +592,44 @@
             }, 2000); // Delay 2 detik
         }
 
+          // Function for Dukun AI request
+        function askDukun(content) {
+             $("#dukunLoading").css("opacity", "1");
+            $.ajax({
+                url: '/dukun',
+                type: 'GET',
+                data: { content: content },
+                success: function (response) {
+                    $("#dukunLoading").css("opacity", "0");
+                      if (response.result) {
+                        $('#dukun-response').html(`
+                         <label>Jawaban Dukun AI:</label>
+                           <pre>${JSON.stringify(response.data, null, 2)}</pre>`);
+                         $("#dukun-result").show();
+                     } else {
+                           $('#dukun-response').html(`<p class="dukun-error-message">${response.message}</p>`);
+                          $("#dukun-result").show();
+                     }
+                },
+                 error: function(xhr, status, error) {
+                     $("#dukunLoading").css("opacity", "0");
+                     let errorMessage;
+                        try {
+                           const errorData = JSON.parse(xhr.responseText);
+                            errorMessage = errorData?.message ||  "An error occurred: "+ error;
+                           console.error("Error from server:", errorData);
+                           console.error("error:", errorMessage);
+                       } catch (e) {
+                           errorMessage = "An error occurred: "+ error;
+                            console.error("Could not parse error response:", xhr.responseText, e);
+                            console.error("error:", errorMessage);
+                        }
+                       $('#dukun-response').html(`<p class="dukun-error-message">${errorMessage}</p>`);
+                        $("#dukun-result").show();
+                }
+            });
+        }
+
         $(document).ready(function() {
             const lastDomain = localStorage.getItem('lastDomain');
             if (lastDomain) {
@@ -520,14 +646,77 @@
                 const domainName = $("#domainName").val();
                 const proxied = $("#proxied").val();
 
-                saveSubdomain({host, target, type , domainName: domainName});
-                loadStoredSubdomains();
-                Swal.fire({
-                    title: 'Success!',
-                    text: 'Subdomain data saved to local storage (No API call made).',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
+                const apiEndpoint = type === 'A' ? '/create-a-record' : '/create-cname-record';
+                 $.ajax({
+                    url: apiEndpoint,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        host: host,
+                        target: target,
+                        domainName: domainName,
+                         proxied: proxied,
+                    }),
+                    success: function(response) {
+                         console.log("API Response:", response);
+                        if (response.success) {
+                            $('#response').html(`<p class="success-message">${response.message}</p>
+                            <label>Data:</label>
+                            <pre>${JSON.stringify(response.data, null, 2)}</pre>`);
+                            $('#result').show();
+                            saveSubdomain({host, target, type , domainName: domainName});
+                            loadStoredSubdomains();
+                            localStorage.setItem('lastDomain',domainName);
+                            Swal.fire({
+                                title: 'Success!',
+                                text: response.message,
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            });
+                        }else{
+                             $('#response').html(`<p class="error-message">${response.error}</p>`);
+                             $('#result').show();
+                            Swal.fire({
+                                title: 'Error!',
+                                text: response.error,
+                                icon: 'error',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    },
+                     error: function(xhr, status, error) {
+                         let errorMessage;
+                        try {
+                            const errorData = JSON.parse(xhr.responseText);
+                           errorMessage = errorData?.error ||  "An error occurred: "+ error;
+                            console.error("Error from server:", errorData);
+                            console.error("error:", errorMessage);
+                        } catch (e) {
+                           errorMessage = "An error occurred: "+ error;
+                            console.error("Could not parse error response:", xhr.responseText, e);
+                            console.error("error:", errorMessage);
+                        }
+                        $('#response').html(`<p class="error-message">${errorMessage}</p>`);
+                        $('#result').show();
+                         Swal.fire({
+                             title: 'Error!',
+                             text: errorMessage,
+                            icon: 'error',
+                             confirmButtonText: 'OK'
+                         });
+
+                    }
                 });
+            });
+              // Event listener for Dukun AI button
+            $('#ask-dukun').on('click', function() {
+                 const content = $('#dukun-content').val();
+                  if (content.trim() === "") {
+                       $('#dukun-response').html(`<p class="dukun-error-message">Tolong masukan pertanyaan</p>`);
+                       $('#dukun-result').show();
+                   } else {
+                       askDukun(content);
+                  }
             });
             toggleTargetInput();
             loadStoredSubdomains();
