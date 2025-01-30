@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Buat Subdomain Cloudflare</title>
+    <title>create subdomain free by wanzofc</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
       <style>
         body {
             font-family: sans-serif;
@@ -15,14 +12,11 @@
             background-color: #f4f4f4;
             color: #333;
         }
-
         h1 {
             text-align: center;
             color: #007bff;
             margin-top: 20px;
         }
-
-         /* Sidebar styles */
         .sidebar {
             height: 100%;
             width: 0;
@@ -35,7 +29,6 @@
             transition: 0.5s;
             padding-top: 60px;
         }
-
         .sidebar a {
             padding: 8px 8px 8px 32px;
             text-decoration: none;
@@ -73,8 +66,6 @@
         .openbtn:hover {
             background-color: #444;
         }
-
-        /* Form Styles */
         .main-content {
             padding: 20px;
         }
@@ -97,7 +88,7 @@
         .input-group {
             display: flex;
             align-items: center;
-              margin-bottom: 10px;
+              margin-bottom: 1px;
         }
        .input-group input {
              width: calc(100% - 22px);
@@ -130,7 +121,7 @@
             display: block;
             margin: 10px 0;
             transition: background-color 0.3s ease;
-            width: 100%; /* Full width button */
+            width: 100%;
         }
         button[type="submit"]:hover {
             background-color: #0056b3;
@@ -160,8 +151,7 @@
         }
          .error-message {
              color: red;
-         }
-        /* Responsive layout for larger screens */
+            }
         @media (min-width: 768px) {
             form {
                  grid-template-columns: 1fr 1fr;
@@ -173,45 +163,39 @@
     </style>
 </head>
 <body>
-
     <div id="mySidebar" class="sidebar">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
-         <a href="https://wanzofc.xyz" target="_blank"><i class="fas fa-home"></i> Home</a>
+         <a href="https://wanzofc.xyz" target="_blank"><i class="fas fa-home"></i>Home</a>
 
     </div>
-
-    <button class="openbtn" onclick="openNav()">☰ Menu</button>
+    <button class="openbtn" onclick="openNav()">☰</button>
 
 
     <div class="main-content">
-         <h1>Buat Subdomain Cloudflare</h1>
+         <h1>CREATE SUBDOMAIN FREE BY WANZOFC</h1></h1>
         <form id="subdomainForm">
-            <label for="host">Subdomain:</label>
+            <label for="host">SUBDOMAIN:</label>
                 <div class="input-group">
                 <input type="text" id="host" name="host" required>
                   <button type="button"  onclick="copyInput('host')"><i class="fa fa-copy"></i></button>
                   </div>
 
 
-            <label for="ip">IP Address:</label>
+            <label for="ip">IP ADDRESS:</label>
                 <div class="input-group">
                 <input type="text" id="ip" name="ip" required>
                    <button type="button" onclick="copyInput('ip')"><i class="fa fa-copy"></i></button>
                 </div>
-            <button type="submit">Buat Subdomain</button>
+            <button type="submit">CREATE</button>
              <div id="result">
-                <label>Result:</label>
+                <label>HASIL:</label>
                 <div id="response"></div>
             </div>
         </form>
     </div>
-     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-     <!-- Clipboard.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
-
     <script>
-    // Sidebar open and close
        function openNav() {
             document.getElementById("mySidebar").style.width = "250px";
         }
@@ -219,7 +203,6 @@
         function closeNav() {
             document.getElementById("mySidebar").style.width = "0";
         }
-        // Function to copy input value
            function copyInput(inputId) {
                 const input = document.getElementById(inputId);
                 const btnCopy = document.querySelector(`[onclick="copyInput('${inputId}')"]`)
@@ -236,9 +219,7 @@
                           btnCopy.innerHTML = '<i class="fa fa-copy"></i>';
                         });
                 }
-            }
-
-          // Fungsi untuk mengambil data yang tersimpan dari localStorage
+        }
         function getStoredSubdomains() {
             try {
                 const storedData = localStorage.getItem('subdomains');
@@ -247,9 +228,7 @@
                    console.error("Error retrieving from localStorage:", error);
                    return [];
             }
-        }
-    
-        // Fungsi untuk menyimpan data ke localStorage
+                                   }
         function saveSubdomain(subdomainData) {
             const subdomains = getStoredSubdomains();
             subdomains.push(subdomainData);
@@ -261,7 +240,6 @@
 
            
         }
-
         document.getElementById('subdomainForm').addEventListener('submit', async function(event) {
             event.preventDefault();
 
