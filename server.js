@@ -175,25 +175,27 @@ app.get('/dukun', async (req, res) => {
 
     if (!content || content.trim() === "") {
         return res.status(400).json({
-           creator: "API Dukun",
+            creator: "API Dukun",
             result: false,
             message: "Tolong tambahkan pertanyaan setelah parameter 'content'.",
-             data: null
+            data: null
         });
     }
 
     try {
         const apiUrl = `https://api.siputzx.my.id/api/ai/dukun?content=${encodeURIComponent(content)}`;
         const apiResponse = await axios.get(apiUrl);
-        if (apiResponse.data && apiResponse.data.result === true && apiResponse.data.data) {
-            res.json({
-                creator: "WANZOFC X TANIA",
+
+        if (apiResponse.data && apiResponse.data.result === true) {
+           
+            const responseData = {
+               creator: "WANZOFC X TANIA",
                 result: true,
-                message: "sebut nama kamu",
-                data: apiResponse.data.data
-            });
+                ...apiResponse.data
+            };
+           res.json(responseData);
         } else {
-           res.status(500).json({
+             res.status(500).json({
             creator: "WANZOFC X TANIA",
                result: false,
                message: "Gagal memproses permintaan Dukun.",
@@ -202,7 +204,7 @@ app.get('/dukun', async (req, res) => {
         }
     } catch (error) {
         console.error("Error API Dukun:", error.message);
-        res.status(500).json({
+       res.status(500).json({
             creator: "WANZOFC X TANIA",
             result: false,
             message: "Maaf, dukun sedang bermeditasi. Coba lagi nanti.",
