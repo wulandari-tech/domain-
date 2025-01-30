@@ -3,7 +3,7 @@ const path = require('path');
 const axios = require('axios');
 
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
 
 // Konfigurasi Cloudflare (Hardcoded - NOT RECOMMENDED FOR PRODUCTION)
 const CLOUDFLARE_ZONE = "8986c21d4df43f0d1708b8f9f6ab4dcd";
