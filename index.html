@@ -1,24 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>create subdomain free by wanzofc</title>
+    <title>Create Subdomain Free by wanzofc</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.16.0/tingle.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.15.1/css/ol.css" type="text/css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.css" />
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
-    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.2/plyr.css" />
     <style>
         body {
             font-family: sans-serif;
@@ -170,64 +156,6 @@
                 grid-column: 1 / 3;
             }
         }
-        .domain-group {
-            display: flex;
-            align-items: center;
-            position: relative; /* Make domain-group relative for absolute positioning of options */
-        }
-
-        .domain-options-btn {
-            background-color: #f8f9fa; /* Warna latar belakang tombol */
-            color: #495057; /* Warna teks tombol */
-            border: 1px solid #ced4da; /* Warna border tombol */
-            border-radius: 4px;
-            padding: 8px 12px;
-            cursor: pointer;
-            margin-left: 10px; /* Jarak antara dropdown dan tombol */
-            font-size: 0.9rem;
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-        }
-
-        .domain-options-btn:hover {
-            background-color: #e9ecef; /* Warna latar belakang tombol saat hover */
-            border-color: #adb5bd; /* Warna border tombol saat hover */
-        }
-
-        .domain-options-btn:focus {
-            outline: none; /* Menghilangkan outline default saat fokus */
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Efek fokus (opsional) */
-        }
-
-        .domain-options-container {
-            display: none; /* Hidden by default */
-            position: absolute;
-            top: 100%; /* Position below the domain group */
-            left: 0;
-            background-color: white;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            padding: 10px;
-            z-index: 1000; /* Ensure it's on top */
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            width: 100%; /* Match width of domain group */
-            margin-top: 5px;
-        }
-
-        .domain-options-container ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .domain-options-container li {
-            padding: 8px 12px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-
-        .domain-options-container li:hover {
-            background-color: #f8f9fa;
-        }
     </style>
 </head>
 <body>
@@ -256,33 +184,19 @@
                 <button type="button" onclick="copyInput('target')"><i class="fa fa-copy"></i></button>
             </div>
          </div>
-            <label for="domainName">PILIH DOMAIN:</label>
-            <div class="domain-group">
-                <select id="domainName" name="domainName">
-                    <option value="wanzofc.us.kg">wanzofc.us.kg</option>
-                    <option value="awan-attack.my.id">awan-attack.my.id</option>
-                    <option value="awanbrayy.web.id">awanbrayy.web.id</option>
-                    <option value="behind-the-scenes.xyz">behind-the-scenes.xyz</option>
-                    <option value="wanzofc.xyz">wanzofc.xyz</option>
-                   <option value="domain-test.co">domain-test.co</option>
-                </select>
-                <button type="button" class="domain-options-btn" onclick="domainOptionsClicked()">Opsi</button>
-                <div id="domainOptionsContainer" class="domain-options-container">
-                    <ul>
-                         <li>wanzofc.us.kg</li>
-                         <li>awan-attack.my.id</li>
-                         <li>awanbrayy.web.id</li>
-                         <li>behind-the-scenes.xyz</li>
-                         <li>wanzofc.xyz</li>
-                         <li>domain-test.co</li>
-                    </ul>
-                </div>
-            </div>
-
+            <label for="domainName">Domain:</label>
+            <select id="domainName" name="domainName">
+                <option value="domain1">wanzofc.us.kg</option>
+                <option value="domain2">awan-attack.my.id</option>
+                <option value="domain3">awanbrayy.web.id</option>
+                <option value="domain4">behind-the-scenes.xyz</option>
+                <option value="domain5">wanzofc.xyz</option>
+               <option value="domain6">domain-test.co</option>
+            </select>
              <label for="proxied">Proxy Status:</label>
             <select id="proxied" name="proxied">
-                <option value="true">PROXIED (CDN ENABLED)</option>
-                <option value="false">DNS only</option>
+                <option value="true">Proxied (CDN Enabled)</option>
+                <option value="false">DNS Only</option>
             </select>
            <button type="submit">CREATE</button>
              <div id="result">
@@ -292,32 +206,7 @@
         </form>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tingle/0.16.0/tingle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/cleave.js@1/dist/cleave.min.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
-    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/rellax@1.12.2/rellax.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
-    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.15.1/build/ol.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    <script src="https://dequeuniversity.com/deque/axe/axe.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/jquery.inputmask.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
-    <script src="https://cdn.plyr.io/3.7.2/plyr.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.9.6/lottie.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/cferdinandi/smooth-scroll/dist/smooth-scroll.polyfills.min.js"></script>
-
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
     <script>
         function openNav() {
             document.getElementById("mySidebar").style.width = "250px";
@@ -383,10 +272,12 @@
            const type = document.getElementById('type').value;
            const domainName = document.getElementById('domainName').value;
            const proxied = document.getElementById('proxied').value;
+
             const responseDiv = document.getElementById('response');
            responseDiv.innerHTML = 'Loading ...';
             let apiUrl;
             let requestBody;
+
             if(type === 'A'){
                 apiUrl = '/create-a-record';
                 requestBody = { host, ip: target, domainName, proxied };
@@ -396,7 +287,8 @@
             } else {
                  responseDiv.innerHTML = '<p class="error-message">Tipe record tidak valid.</p>';
                  return;
-        }
+            }
+
             try {
                const response = await fetch(apiUrl, {
                     method: 'POST',
@@ -418,14 +310,7 @@
                 responseDiv.innerHTML = `<p class="error-message">Terjadi kesalahan: ${error.message}</p>`;
             }
         });
-
-        function domainOptionsClicked() {
-            const domainOptionsContainer = document.getElementById('domainOptionsContainer');
-            domainOptionsContainer.style.display = domainOptionsContainer.style.display === 'none' ? 'block' : 'none';
-        }
-
          toggleTargetInput();
-         AOS.init();
     </script>
 </body>
 </html>
