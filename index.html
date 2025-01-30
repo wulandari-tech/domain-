@@ -1,405 +1,92 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Create Subdomain Free by wanzofc - API Request</title>
+    <title>Create Subdomain Free</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
-     <style>
-        body {
-            font-family: sans-serif;
-            margin: 0;
-            background-color: #f8f9fa;
-            color: #495057;
-        }
-        h1 {
-            text-align: center;
-            color: #007bff;
-            margin-top: 20px;
-        }
-        .sidebar {
-            height: 100%;
-            width: 0;
-            position: fixed;
-            z-index: 1;
-            top: 0;
-            left: 0;
-            background-color: #343a40;
-            overflow-x: hidden;
-            transition: 0.5s;
-            padding-top: 60px;
-        }
-        .sidebar a {
-            padding: 8px 8px 8px 32px;
-            text-decoration: none;
-            font-size: 20px;
-            color: #818181;
-            display: block;
-            transition: 0.3s;
-        }
-        .sidebar a:hover {
-            color: #f1f1f1;
-        }
-        .sidebar .closebtn {
-            position: absolute;
-            top: 0;
-            right: 25px;
-            font-size: 36px;
-            margin-left: 50px;
-            cursor: pointer;
-        }
-        .openbtn {
-            font-size: 20px;
-            cursor: pointer;
-            background-color: #6c757d;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            position: fixed;
-            margin: 10px;
-            top: 0;
-            z-index: 100;
-            left: 0;
-            border-radius: 4px;
-        }
-        .openbtn:hover {
-            background-color: #5a6268;
-        }
-        .main-content {
-            padding: 20px;
-        }
-         form {
-            max-width: 600px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            display: grid;
-            grid-gap: 15px;
-            grid-template-columns: 1fr;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #343a40;
-        }
-        .input-group {
-            display: flex;
-            align-items: center;
-            margin-bottom: 5px;
-        }
-        .input-group input {
-            width: calc(100% - 22px);
-            padding: 10px;
-            border: 1px solid #ced4da;
-            border-radius: 4px 0 0 4px;
-            box-sizing: border-box;
-        }
-        .input-group button {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius:0 4px 4px 0;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .input-group button:hover{
-           background-color: #0056b3;
-        }
-        button[type="submit"] {
-            background-color: #007bff;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            display: block;
-            margin: 15px 0;
-            transition: background-color 0.3s ease;
-            width: 100%;
-            font-size: 1rem;
-        }
-        button[type="submit"]:hover {
-            background-color: #0056b3;
-        }
-         #result {
-            display: none;
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #e9ecef;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            overflow-x: auto;
-        }
-        #result label {
-            font-weight: bold;
-            color: #343a40;
-        }
-        #result pre {
-             background-color: #f8f9fa;
-            padding: 10px;
-            border-radius: 4px;
-            overflow-x: auto;
-            white-space: pre-wrap;
-            word-break: break-word;
-            border: 1px solid #ced4da;
-        }
-        #result p {
-            margin-bottom: 10px;
-        }
-        .success-message {
-            color: green;
-            font-weight: bold;
-        }
-        .error-message {
-             color: red;
-            font-weight: bold;
-        }
-        @media (min-width: 768px) {
-             form {
-                 grid-template-columns: 1fr 1fr;
-            }
-             #result {
-                 grid-column: 1 / 3;
-            }
-        }
-        #subdomainList {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #fff;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-        }
-        #subdomainList label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 10px;
-             color: #343a40;
-        }
-        #storedSubdomains {
-            list-style: none;
-            padding-left: 0;
-        }
-        #storedSubdomains li {
-            padding: 8px 0;
-            border-bottom: 1px dashed #ced4da;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        #storedSubdomains li:last-child {
-            border-bottom: none;
-        }
-        #storedSubdomains li span {
-            margin-right: 10px;
-        }
-        .delete-subdomain-btn {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 5px 10px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: background-color 0.3s ease;
-        }
-        .delete-subdomain-btn:hover {
-            background-color: #c82333;
-        }
-        .loading-indicator {
-            display: inline-block;
-            width: 1rem;
-            height: 1rem;
-            vertical-align: middle;
-            border: 0.25em solid currentColor;
-            border-right-color: transparent;
-            border-radius: 50%;
-            animation: spinner-border .75s linear infinite;
-            margin-left: 5px;
-            opacity: 0;
-        }
-
-        @keyframes spinner-border {
-            to { transform: rotate(360deg); }
-        }
-        .ip-check-section {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #fff;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-        }
-
-        .ip-check-section label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 10px;
-            color: #343a40;
-        }
-
-        .ip-check-section .input-group {
-            margin-bottom: 10px;
-        }
-
-        .ip-check-section .input-group input {
-            width: calc(100% - 110px); /* Adjusted width */
-        }
-
-        .ip-check-section .input-group button {
-            width: 90px; /* Set button width */
-        }
-
-        .ip-check-result {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #f8f9fa;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-        }
-
-        .ip-check-result p {
-            margin: 0;
-        }
-
-        .ip-check-result .success {
-            color: green;
-        }
-
-        .ip-check-result .error {
-            color: red;
-        }
-        /* Style untuk loading indicator pada tombol IP Check */
-        .ip-check-section .input-group button .loading-indicator {
-            margin-left: 0; /* Hapus margin agar spinner berada di tengah tombol */
-            margin-right: 5px;
-            vertical-align: middle;
-        }
-         /* Styles for Dukun AI in sidebar */
-         .dukun-container {
-            padding: 10px;
-        }
-
-        .dukun-label {
-            display: block;
-             margin-bottom: 5px;
-            color: #fff;
-        }
-         .dukun-textarea {
-             width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
-             background-color: #495057;
-             color: #fff;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
-            box-sizing: border-box;
-             min-height: 80px;
-              resize: vertical;
-        }
-        .dukun-button {
-            background-color: #007bff;
-            color: white;
-            padding: 8px 12px;
-             border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: background-color 0.3s ease;
-             width: 100%;
-             position: relative;
-              margin-bottom: 10px;
-        }
-
-        .dukun-button:hover {
-            background-color: #0056b3;
-        }
-        .dukun-result {
-             padding: 8px;
-           margin-top: 10px;
-             background-color: #e9ecef;
-            border: 1px solid #dee2e6;
-             border-radius: 4px;
-            overflow-x: auto;
-              display: none;
-           color: #343a40;
-        }
-        .dukun-result label {
-          font-weight: bold;
-           display: block;
-            margin-bottom: 10px;
-        }
-        .dukun-result pre{
-             background-color: #f8f9fa;
-            padding: 10px;
-            border-radius: 4px;
-            overflow-x: auto;
-            white-space: pre-wrap;
-            word-break: break-word;
-            border: 1px solid #ced4da;
-        }
-         .dukun-error-message {
-             color: red;
-            font-weight: bold;
-        }
-        /* Style untuk loading indicator pada tombol Dukun AI */
-        .dukun-button .loading-indicator {
-            margin-left: 0; /* Hapus margin agar spinner berada di tengah tombol */
-            margin-right: 5px;
-             position: absolute;
-            top: 50%;
-            left: 10px; /* Adjust as needed */
-            transform: translateY(-50%);
-            vertical-align: middle;
-        }
+    <style>
+        body { font-family: sans-serif; margin: 0; background-color: #f8f9fa; color: #495057; }
+        h1 { text-align: center; color: #007bff; margin-top: 20px; }
+        .sidebar { height: 100%; width: 0; position: fixed; z-index: 1; top: 0; left: 0; background-color: #343a40; overflow-x: hidden; transition: 0.5s; padding-top: 60px; }
+        .sidebar button { display: block; width: 100%; padding: 10px 20px; text-align: left; border: none; background: none; color: #818181; font-size: 20px; cursor: pointer; transition: background-color 0.3s ease, color 0.3s ease; }
+        .sidebar button:hover { color: #f1f1f1; background-color: #495057; }
+        .sidebar .closebtn { position: absolute; top: 0; right: 25px; font-size: 36px; margin-left: 50px; cursor: pointer; }
+        .openbtn { font-size: 20px; cursor: pointer; background-color: #6c757d; color: white; padding: 10px 15px; border: none; position: fixed; margin: 10px; top: 0; z-index: 100; left: 0; border-radius: 4px; }
+        .openbtn:hover { background-color: #5a6268; }
+        .main-content { padding: 20px; transition: margin-left 0.5s; }
+        form { max-width: 600px; margin: 20px auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); display: grid; grid-gap: 15px; grid-template-columns: 1fr; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #343a40; }
+        .input-group { display: flex; align-items: center; margin-bottom: 5px; }
+        .input-group input { width: calc(100% - 22px); padding: 10px; border: 1px solid #ced4da; border-radius: 4px 0 0 4px; box-sizing: border-box; }
+        .input-group button { background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 0 4px 4px 0; cursor: pointer; transition: background-color 0.3s ease; }
+        .input-group button:hover { background-color: #0056b3; }
+        button[type="submit"] { background-color: #007bff; color: white; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; display: block; margin: 15px 0; transition: background-color 0.3s ease; width: 100%; font-size: 1rem; }
+        button[type="submit"]:hover { background-color: #0056b3; }
+        #result { display: none; margin-top: 20px; padding: 15px; background-color: #e9ecef; border: 1px solid #dee2e6; border-radius: 8px; overflow-x: auto; }
+        #result label { font-weight: bold; color: #343a40; }
+        #result pre { background-color: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; white-space: pre-wrap; word-break: break-word; border: 1px solid #ced4da; }
+        #subdomainList { margin-top: 20px; padding: 15px; background-color: #fff; border: 1px solid #dee2e6; border-radius: 8px; }
+        #subdomainList label { font-weight: bold; display: block; margin-bottom: 10px; color: #343a40; }
+        #storedSubdomains { list-style: none; padding-left: 0; }
+        #storedSubdomains li { padding: 8px 0; border-bottom: 1px dashed #ced4da; display: flex; justify-content: space-between; align-items: center; }
+        #storedSubdomains li:last-child { border-bottom: none; }
+        #storedSubdomains li span { margin-right: 10px; }
+        .delete-subdomain-btn { background-color: #dc3545; color: white; border: none; border-radius: 4px; padding: 5px 10px; cursor: pointer; font-size: 0.8rem; transition: background-color 0.3s ease; }
+        .delete-subdomain-btn:hover { background-color: #c82333; }
+        .loading-indicator { display: inline-block; width: 1rem; height: 1rem; vertical-align: middle; border: 0.25em solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spinner-border .75s linear infinite; margin-left: 5px; opacity: 0; }
+        @keyframes spinner-border { to { transform: rotate(360deg); } }
+        .ip-check-section { margin-top: 20px; padding: 15px; background-color: #fff; border: 1px solid #dee2e6; border-radius: 8px; }
+        .ip-check-section label { font-weight: bold; display: block; margin-bottom: 10px; color: #343a40; }
+        .ip-check-section .input-group { margin-bottom: 10px; }
+        .ip-check-section .input-group input { width: calc(100% - 110px); }
+        .ip-check-section .input-group button { width: 90px; }
+        .ip-check-result { margin-top: 10px; padding: 10px; background-color: #f8f9fa; border: 1px solid #ced4da; border-radius: 4px; }
+        .ip-check-result p { margin: 0; }
+        .ip-check-result .success { color: green; }
+        .ip-check-result .error { color: red; }
+        .ip-check-section .input-group button .loading-indicator { margin-left: 0; margin-right: 5px; vertical-align: middle; }
+        #json-result { margin-top: 20px; padding: 15px; background-color: #e9ecef; border: 1px solid #dee2e6; border-radius: 8px; display: none; overflow-x: auto; color: #343a40; }
+        #json-result label { font-weight: bold; display: block; margin-bottom: 10px; }
+        #json-result pre { background-color: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; white-space: pre-wrap; word-break: break-word; border: 1px solid #ced4da; }
+        .json-error-message { color: red; font-weight: bold; }
     </style>
 </head>
 <body>
     <div id="mySidebar" class="sidebar">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
-         <a href="https://wanzofc.xyz" target="_blank"><i class="fas fa-home"></i>Home</a>
-        <div class="dukun-container">
-            <label class="dukun-label" for="dukun-content">Tanya Dukun AI</label>
-            <textarea class="dukun-textarea" id="dukun-content" placeholder="Masukan pertanyaan..."></textarea>
-            <button class="dukun-button" id="ask-dukun">
-                 <span class="loading-indicator" id="dukunLoading"></span>
-                Tanya
-            </button>
-              <div class="dukun-result" id="dukun-result">
-              <label>Hasil Dukun AI</label>
-                 <div id="dukun-response"></div>
-             </div>
-        </div>
+         <button onclick="loadHome()"><i class="fas fa-home"></i> Home</button>
+        <button onclick="fetchJson('/dukun', 'dukun')"><i class="fas fa-magic"></i> Dukun AI</button>
+        <button onclick="fetchJson('/metaai', 'metaai')"><i class="fas fa-brain"></i> Meta AI</button>
+         <button onclick="fetchJson('/vcc-generator', 'vcc')"><i class="fas fa-credit-card"></i> VCC Generator</button>
     </div>
     <button class="openbtn" onclick="openNav()">☰</button>
-    <div class="main-content">
-        <h1>CREATE SUBDOMAIN FREE BY WANZOFC - API REQUEST</h1>
-        <p>Isi formulir di bawah untuk membuat subdomain gratis. Pilih jenis record (A atau CNAME), masukkan detail yang diperlukan, dan klik CREATE.</p>
-        <form id="subdomainForm" method="POST">
+    <div class="main-content" id="mainContent">
+        <h1>CREATE SUBDOMAIN FREE</h1>
+        <p>Isi form di bawah.</p>
+        <form id="subdomainForm">
             <label for="host">SUBDOMAIN:</label>
             <div class="input-group">
-                <input type="text" id="host" name="host" required pattern="^[a-z0-9-]+$" placeholder="Subdomain (lowercase letters, numbers, and hyphens only)">
-                <button type="button"  onclick="copyInput('host')"><i class="fa fa-copy"></i></button>
+                <input type="text" id="host" required pattern="^[a-z0-9-]+$" placeholder="Subdomain">
+                <button type="button" onclick="copyInput('host')"><i class="fa fa-copy"></i></button>
             </div>
-             <label for="type">TYPE:</label>
-            <select id="type" name="type" class="form-select" onchange="toggleTargetInput()">
-                <option value="A">A Record (IP Address)</option>
+            <label for="type">TYPE:</label>
+            <select id="type" onchange="toggleTargetInput()">
+                <option value="A">A Record</option>
                 <option value="CNAME">CNAME Record</option>
             </select>
             <div id="targetInputContainer">
-            <label for="target" id="targetLabel">IP ADDRESS/CNAME:</label>
-            <div class="input-group">
-                <input type="text" id="target" name="target" required placeholder="IP Address or CNAME Target">
-                <button type="button" onclick="copyInput('target')"><i class="fa fa-copy"></i></button>
+                <label for="target" id="targetLabel">IP/CNAME:</label>
+                <div class="input-group">
+                    <input type="text" id="target" required placeholder="IP/CNAME">
+                    <button type="button" onclick="copyInput('target')"><i class="fa fa-copy"></i></button>
+                </div>
             </div>
-           </div>
             <label for="domainName">Domain:</label>
-            <select id="domainName" name="domainName" class="form-select">
+             <select id="domainName">
                 <option value="domain1">wanzofc.us.kg</option>
                 <option value="domain2">awan-attack.my.id</option>
                 <option value="domain3">awanbrayy.web.id</option>
@@ -407,13 +94,13 @@
                 <option value="domain5">wanzofc.xyz</option>
                <option value="domain6">alfiansyah.xyz</option>
             </select>
-             <label for="proxied">Proxy Status:</label>
-            <select id="proxied" name="proxied" class="form-select">
-                <option value="true">Proxied (CDN Enabled)</option>
+            <label for="proxied">Proxy Status:</label>
+            <select id="proxied">
+                <option value="true">Proxied</option>
                 <option value="false">DNS Only</option>
             </select>
             <button type="submit">CREATE</button>
-             <div id="result">
+            <div id="result">
                 <label>HASIL:</label>
                 <div id="response"></div>
             </div>
@@ -421,215 +108,97 @@
          <div class="ip-check-section">
             <label for="ipAddress">IP CHECK:</label>
             <div class="input-group">
-                <input type="text" id="ipAddress" placeholder="Enter IP Address" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" title="Enter a valid IP address (e.g., 192.168.1.1)">
+                <input type="text" id="ipAddress" placeholder="Enter IP" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" title="Enter a valid IP">
                 <button type="button" id="checkIpButton">
                     <span class="loading-indicator" id="ipCheckLoading"></span>
                     Check IP
                 </button>
             </div>
-            <div class="ip-check-result" id="ipCheckResult">
-                </div>
+            <div class="ip-check-result" id="ipCheckResult"></div>
         </div>
-         <div id="subdomainList">
+        <div id="subdomainList">
             <label>SUBDOMAIN TERSIMPAN:</label>
-            <ul id="storedSubdomains">
-            </ul>
+            <ul id="storedSubdomains"></ul>
+        </div>
+         <div id="json-result">
+            <label>JSON:</label>
+            <div id="json-response-content"></div>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function openNav() {
-            document.getElementById("mySidebar").style.width = "250px";
-        }
-
-        function closeNav() {
-            document.getElementById("mySidebar").style.width = "0";
-        }
-        function copyInput(inputId) {
-            const input = document.getElementById(inputId);
-            const btnCopy = document.querySelector(`[onclick="copyInput('${inputId}')"]`);
-            if (input) {
-                navigator.clipboard.writeText(input.value).then(() => {
-                    btnCopy.innerHTML = '<i class="fas fa-check"></i>';
-                    setTimeout(()=>{
-                        btnCopy.innerHTML = '<i class="fa fa-copy"></i>';
-                    },1500);
-                    console.log('Text copied to clipboard');
-                })
-                .catch(err => {
-                    console.error('Failed to copy text: ', err);
-                    btnCopy.innerHTML = '<i class="fa fa-copy"></i>';
-                });
-            }
-        }
-        function getStoredSubdomains() {
-            try {
-                const storedData = localStorage.getItem('subdomains');
-                return storedData ? JSON.parse(storedData) : [];
-            } catch (error) {
-                console.error("Error retrieving from localStorage:", error);
-                return [];
-            }
-        }
-        function saveSubdomain(subdomainData) {
-            const subdomains = getStoredSubdomains();
-            subdomains.push(subdomainData);
-            try{
-                localStorage.setItem('subdomains', JSON.stringify(subdomains));
-            } catch (error) {
-                console.error("Error saving to localStorage:", error);
-            }
-        }
-        function deleteStoredSubdomain(index) {
-            let subdomains = getStoredSubdomains();
-            if (index >= 0 && index < subdomains.length) {
-                subdomains.splice(index, 1);
-                try {
-                    localStorage.setItem('subdomains', JSON.stringify(subdomains));
-                    loadStoredSubdomains();
-                    Swal.fire({
-                        title: 'Success!',
-                        text: 'Subdomain removed from list.',
-                        icon: 'success',
-                        timer: 1500,
-                        showConfirmButton: false
-                    });
-                } catch (error) {
-                    console.error("Error deleting from localStorage:", error);
-                    Swal.fire({
-                        title: 'Error!',
-                        text: 'Failed to remove subdomain.',
-                        icon: 'error',
-                    });
-                }
-            }
-        }
-        function toggleTargetInput() {
-            const typeSelect = document.getElementById('type');
-            const targetLabel = document.getElementById('targetLabel');
-            const targetInput = document.getElementById('target');
-            if (typeSelect.value === 'A') {
-                targetLabel.textContent = 'IP ADDRESS:';
-                targetInput.placeholder = 'IP Address';
-                targetInput.pattern = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$";
-                targetInput.title = "Enter a valid IP address (e.g., 192.168.1.1)";
-            } else if (typeSelect.value === 'CNAME') {
-                targetLabel.textContent = 'CNAME TARGET:';
-                targetInput.placeholder = 'CNAME Target';
-                targetInput.pattern = "^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$";
-                targetInput.title = "Enter a valid CNAME target (e.g., target.example.com)";
-            }
-        }
-        function loadStoredSubdomains() {
-            const storedSubdomains = getStoredSubdomains();
-            const subdomainListUl = $("#storedSubdomains");
-            subdomainListUl.empty();
-
-            if (storedSubdomains.length > 0) {
-                storedSubdomains.forEach((subdomainData, index) => {
-                    const listItem = `<li>
-                                        <span>${subdomainData.host}.${subdomainData.domainName} (${subdomainData.type}) - Target: ${subdomainData.target}</span>
-                                        <button class="delete-subdomain-btn" onclick="deleteStoredSubdomain(${index})"><i class="fas fa-trash"></i> Delete</button>
-                                    </li>`;
-                    subdomainListUl.append(listItem);
-                });
-            } else {
-                subdomainListUl.append("<li>Belum ada subdomain tersimpan.</li>");
-            }
-        }
-
-        function validateInput() {
-            const host = $("#host").val();
-            const target = $("#target").val();
-            const type = $("#type").val();
-            let isValid = true;
-            let errorMessage = "";
-            const subdomainRegex = /^[a-z0-9-]+$/;
-            if (!subdomainRegex.test(host)) {
-                isValid = false;
-                errorMessage += "Subdomain harus hanya berisi huruf kecil, angka, dan tanda hubung.\n";
-            }
-
-            if (type === 'A') {
-                const ipRegex = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/;
-                if (!ipRegex.test(target)) {
-                    isValid = false;
-                    errorMessage += "Target harus berupa IP Address yang valid.\n";
-                }
-            } else if (type === 'CNAME') {
-                const cnameRegex = /^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/;
-                if (!cnameRegex.test(target)) {
-                    isValid = false;
-                    errorMessage += "Target harus berupa CNAME yang valid.\n";
-                }
-            }
-
-            if (!isValid) {
-                Swal.fire({
-                    title: 'Validation Error!',
-                    html: `<pre style="text-align: left;">${errorMessage}</pre>`,
-                    icon: 'warning',
-                    confirmButtonText: 'OK'
-                });
-            }
-            return isValid;
-        }
-// Fungsi untuk melakukan IP check
-        function checkIP(ipAddress) {
-            // Menampilkan loading indicator
-            $("#ipCheckLoading").css("opacity", "1");
-
-            // Simulasi delay untuk menampilkan loading indicator, ganti dengan API call yang sesungguhnya
-            setTimeout(() => {
-                // Sembunyikan loading indicator
-                $("#ipCheckLoading").css("opacity", "0");
-
-                // Tampilkan hasil dummy
-                const isSuccess = Math.random() < 0.8; // 80% chance of success
-                const resultMessage = isSuccess ? "IP address is valid and reachable." : "IP address is invalid or unreachable.";
-                const resultClass = isSuccess ? "success" : "error";
-                $("#ipCheckResult").html(`<p class="${resultClass}">${resultMessage}</p>`);
-            }, 2000); // Delay 2 detik
-        }
-
-          // Function for Dukun AI request
-        function askDukun(content) {
-             $("#dukunLoading").css("opacity", "1");
-            $.ajax({
-                url: '/dukun',
-                type: 'GET',
-                data: { content: content },
-                success: function (response) {
-                    $("#dukunLoading").css("opacity", "0");
-                      if (response.result) {
-                        $('#dukun-response').html(`
-                         <label>Jawaban Dukun AI:</label>
-                           <pre>${JSON.stringify(response.data, null, 2)}</pre>`);
-                         $("#dukun-result").show();
-                     } else {
-                           $('#dukun-response').html(`<p class="dukun-error-message">${response.message}</p>`);
-                          $("#dukun-result").show();
+        function openNav() { document.getElementById("mySidebar").style.width = "250px"; document.getElementById("mainContent").style.marginLeft = "250px"; }
+        function closeNav() { document.getElementById("mySidebar").style.width = "0"; document.getElementById("mainContent").style.marginLeft = "0"; }
+        function loadHome() { $('#json-result').hide(); $('#mainContent').show(); document.getElementById("mainContent").innerHTML = `<h1>CREATE SUBDOMAIN FREE</h1><p>Isi form di bawah.</p><form id="subdomainForm"><label for="host">SUBDOMAIN:</label><div class="input-group"><input type="text" id="host" required pattern="^[a-z0-9-]+$" placeholder="Subdomain"><button type="button" onclick="copyInput('host')"><i class="fa fa-copy"></i></button></div><label for="type">TYPE:</label><select id="type" onchange="toggleTargetInput()"><option value="A">A Record</option><option value="CNAME">CNAME Record</option></select><div id="targetInputContainer"><label for="target" id="targetLabel">IP/CNAME:</label><div class="input-group"><input type="text" id="target" required placeholder="IP/CNAME"><button type="button" onclick="copyInput('target')"><i class="fa fa-copy"></i></button></div></div><label for="domainName">Domain:</label><select id="domainName"><option value="domain1">wanzofc.us.kg</option><option value="domain2">awan-attack.my.id</option><option value="domain3">awanbrayy.web.id</option><option value="domain4">behind-the-scenes.xyz</option><option value="domain5">wanzofc.xyz</option><option value="domain6">alfiansyah.xyz</option></select><label for="proxied">Proxy Status:</label><select id="proxied"><option value="true">Proxied</option><option value="false">DNS Only</option></select><button type="submit">CREATE</button><div id="result"><label>HASIL:</label><div id="response"></div></div></form><div class="ip-check-section"><label for="ipAddress">IP CHECK:</label><div class="input-group"><input type="text" id="ipAddress" placeholder="Enter IP" pattern="^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$" title="Enter a valid IP"><button type="button" id="checkIpButton"><span class="loading-indicator" id="ipCheckLoading"></span>Check IP</button></div><div class="ip-check-result" id="ipCheckResult"></div></div><div id="subdomainList"><label>SUBDOMAIN TERSIMPAN:</label><ul id="storedSubdomains"></ul></div>`; loadStoredSubdomains(); document.getElementById('subdomainForm').addEventListener('submit', function(event){ event.preventDefault(); if (!validateInput()) return; const host = $("#host").val(); const target = $("#target").val(); const type = $("#type").val(); const domainName = $("#domainName").val(); const proxied = $("#proxied").val(); const apiEndpoint = type === 'A' ? '/create-a-record' : '/create-cname-record'; $.ajax({ url: apiEndpoint, type: 'POST', contentType: 'application/json', data: JSON.stringify({ host: host, target: target, domainName: domainName, proxied: proxied, }), success: function(response) { console.log("API Response:", response); if (response.success) { $('#response').html(`<p class="success-message">${response.message}</p><label>Data:</label><pre>${JSON.stringify(response.data, null, 2)}</pre>`); $('#result').show(); saveSubdomain({host, target, type , domainName: domainName}); loadStoredSubdomains(); localStorage.setItem('lastDomain',domainName); Swal.fire({ title: 'Success!', text: response.message, icon: 'success', confirmButtonText: 'OK' }); }else{ $('#response').html(`<p class="error-message">${response.error}</p>`); $('#result').show(); Swal.fire({ title: 'Error!', text: response.error, icon: 'error', confirmButtonText: 'OK' }); } }, error: function(xhr, status, error) { let errorMessage; try { const errorData = JSON.parse(xhr.responseText); errorMessage = errorData?.error ||  "An error occurred: "+ error; console.error("Error from server:", errorData); console.error("error:", errorMessage); } catch (e) { errorMessage = "An error occurred: "+ error; console.error("Could not parse error response:", xhr.responseText, e); console.error("error:", errorMessage); } $('#response').html(`<p class="error-message">${errorMessage}</p>`); $('#result').show(); Swal.fire({ title: 'Error!', text: errorMessage, icon: 'error', confirmButtonText: 'OK' }); } }); }); document.getElementById('checkIpButton').addEventListener('click', function(){ const ipAddress = $("#ipAddress").val(); if (ipAddress) { checkIP(ipAddress); } else { $("#ipCheckResult").html('<p class="error">Please enter an IP address.</p>'); } }) }
+        function copyInput(inputId) { const input = document.getElementById(inputId); const btnCopy = document.querySelector(`[onclick="copyInput('${inputId}')"]`); if (input) { navigator.clipboard.writeText(input.value).then(() => { btnCopy.innerHTML = '<i class="fas fa-check"></i>'; setTimeout(() => { btnCopy.innerHTML = '<i class="fa fa-copy"></i>'; }, 1500); console.log('Text copied to clipboard'); }) .catch(err => { console.error('Failed to copy text: ', err); btnCopy.innerHTML = '<i class="fa fa-copy"></i>'; }); } }
+        function getStoredSubdomains() { try { const storedData = localStorage.getItem('subdomains'); return storedData ? JSON.parse(storedData) : []; } catch (error) { console.error("Error retrieving from localStorage:", error); return []; } }
+        function saveSubdomain(subdomainData) { const subdomains = getStoredSubdomains(); subdomains.push(subdomainData); try { localStorage.setItem('subdomains', JSON.stringify(subdomains)); } catch (error) { console.error("Error saving to localStorage:", error); } }
+        function deleteStoredSubdomain(index) { let subdomains = getStoredSubdomains(); if (index >= 0 && index < subdomains.length) { subdomains.splice(index, 1); try { localStorage.setItem('subdomains', JSON.stringify(subdomains)); loadStoredSubdomains(); Swal.fire({ title: 'Success!', text: 'Subdomain removed.', icon: 'success', timer: 1500, showConfirmButton: false }); } catch (error) { console.error("Error deleting from localStorage:", error); Swal.fire({ title: 'Error!', text: 'Failed to remove.', icon: 'error', }); } } }
+        function toggleTargetInput() { const typeSelect = document.getElementById('type'); const targetLabel = document.getElementById('targetLabel'); const targetInput = document.getElementById('target'); if (typeSelect.value === 'A') { targetLabel.textContent = 'IP:'; targetInput.placeholder = 'IP'; targetInput.pattern = "^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$"; targetInput.title = "Enter a valid IP (e.g., 192.168.1.1)"; } else if (typeSelect.value === 'CNAME') { targetLabel.textContent = 'CNAME:'; targetInput.placeholder = 'CNAME'; targetInput.pattern = "^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$"; targetInput.title = "Enter a valid CNAME (e.g., target.example.com)"; } }
+        function loadStoredSubdomains() { const storedSubdomains = getStoredSubdomains(); const subdomainListUl = $("#storedSubdomains"); subdomainListUl.empty(); if (storedSubdomains.length > 0) { storedSubdomains.forEach((subdomainData, index) => { const listItem = `<li><span>${subdomainData.host}.${subdomainData.domainName} (${subdomainData.type}) - Target: ${subdomainData.target}</span><button class="delete-subdomain-btn" onclick="deleteStoredSubdomain(${index})"><i class="fas fa-trash"></i> Delete</button></li>`; subdomainListUl.append(listItem); }); } else { subdomainListUl.append("<li>Belum ada subdomain.</li>"); } }
+        function validateInput() { const host = $("#host").val(); const target = $("#target").val(); const type = $("#type").val(); let isValid = true; let errorMessage = ""; const subdomainRegex = /^[a-z0-9-]+$/; if (!subdomainRegex.test(host)) { isValid = false; errorMessage += "Subdomain harus huruf kecil, angka, dan -.\\n"; } if (type === 'A') { const ipRegex = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/; if (!ipRegex.test(target)) { isValid = false; errorMessage += "Target harus berupa IP yang valid.\\n"; } } else if (type === 'CNAME') { const cnameRegex = /^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/; if (!cnameRegex.test(target)) { isValid = false; errorMessage += "Target harus berupa CNAME yang valid.\\n"; } } if (!isValid) { Swal.fire({ title: 'Validation Error!', html: `<pre style="text-align: left;">${errorMessage}</pre>`, icon: 'warning', confirmButtonText: 'OK' }); } return isValid; }
+        function checkIP(ipAddress) { $("#ipCheckLoading").css("opacity", "1"); setTimeout(() => { $("#ipCheckLoading").css("opacity", "0"); const isSuccess = Math.random() < 0.8; const resultMessage = isSuccess ? "IP valid dan terjangkau." : "IP tidak valid."; const resultClass = isSuccess ? "success" : "error"; $("#ipCheckResult").html(`<p class="${resultClass}">${resultMessage}</p>`); }, 2000); }
+          function fetchJson(apiEndpoint, type) {
+            $('#json-result').hide();
+            $('#mainContent').hide();
+             $("#json-response-content").empty();
+                let apiUrl = apiEndpoint;
+                 if(type === "dukun"){
+                    const content = prompt("Tanya Dukun:");
+                     if(!content || content.trim() === "") {
+                          alert("Tolong tanya dukun!");
+                         return;
                      }
-                },
-                 error: function(xhr, status, error) {
-                     $("#dukunLoading").css("opacity", "0");
-                     let errorMessage;
-                        try {
-                           const errorData = JSON.parse(xhr.responseText);
-                            errorMessage = errorData?.message ||  "An error occurred: "+ error;
-                           console.error("Error from server:", errorData);
-                           console.error("error:", errorMessage);
-                       } catch (e) {
-                           errorMessage = "An error occurred: "+ error;
-                            console.error("Could not parse error response:", xhr.responseText, e);
-                            console.error("error:", errorMessage);
+                     apiUrl = `${apiEndpoint}?content=${encodeURIComponent(content)}`;
+                 } else if (type === "metaai"){
+                     const query = prompt("Tanya Meta AI:");
+                      if(!query || query.trim() === "") {
+                           alert("Tolong tanya metaai!");
+                           return;
+                       }
+                     apiUrl = `${apiEndpoint}?query=${encodeURIComponent(query)}`;
+                  } else if (type === "vcc") {
+                      const cardType = prompt("Pilih tipe kartu (MasterCard/Visa):", "MasterCard");
+                      const count = prompt("Jumlah kartu:", 1);
+                       if(!cardType || cardType.trim() === "") {
+                            alert("Tolong pilih kartu!");
+                           return;
                         }
-                       $('#dukun-response').html(`<p class="dukun-error-message">${errorMessage}</p>`);
-                        $("#dukun-result").show();
-                }
-            });
-        }
-
+                       if(isNaN(count) || count <= 0 ) {
+                         alert("Tolong pilih jumlah kartu!");
+                           return;
+                       }
+                      apiUrl = `${apiEndpoint}?type=${encodeURIComponent(cardType)}&count=${parseInt(count, 10)}`;
+                  }
+             $.ajax({
+                url: apiUrl,
+                type: 'GET',
+                 success: function(response) {
+                    if (response && response.result === true) {
+                        $("#json-response-content").html(`<label>JSON:</label><pre>${JSON.stringify(response, null, 2)}</pre>`);
+                        $('#json-result').show();
+                    } else {
+                        $('#json-response-content').html(`<p class="json-error-message">${response.message || "Gagal ambil data."}</p>`);
+                        $('#json-result').show();
+                    }
+                 },
+                 error: function(xhr, status, error) {
+                      let errorMessage;
+                    try {
+                         const errorData = JSON.parse(xhr.responseText);
+                          errorMessage = errorData?.message || "Terjadi kesalahan: "+ error;
+                          console.error("Error from server:", errorData);
+                          console.error("error:", errorMessage);
+                     } catch (e) {
+                        errorMessage =  "Terjadi kesalahan: "+ error;
+                        console.error("Gagal parse respon error:", xhr.responseText, e);
+                        console.error("error:", errorMessage);
+                     }
+                     $('#json-response-content').html(`<p class="json-error-message">${errorMessage}</p>`);
+                     $('#json-result').show();
+                 }
+             })
+         }
         $(document).ready(function() {
             const lastDomain = localStorage.getItem('lastDomain');
             if (lastDomain) {
@@ -637,97 +206,58 @@
             }
             $("#subdomainForm").submit(function(event) {
                 event.preventDefault();
-                if (!validateInput()) {
-                    return;
-                }
+                if (!validateInput()) return;
                 const host = $("#host").val();
                 const target = $("#target").val();
                 const type = $("#type").val();
                 const domainName = $("#domainName").val();
                 const proxied = $("#proxied").val();
-
                 const apiEndpoint = type === 'A' ? '/create-a-record' : '/create-cname-record';
-                 $.ajax({
-                    url: apiEndpoint,
+                $.ajax({
+                   url: apiEndpoint,
                     type: 'POST',
                     contentType: 'application/json',
-                    data: JSON.stringify({
-                        host: host,
-                        target: target,
-                        domainName: domainName,
-                         proxied: proxied,
-                    }),
+                    data: JSON.stringify({ host: host, target: target, domainName: domainName, proxied: proxied }),
                     success: function(response) {
-                         console.log("API Response:", response);
-                        if (response.success) {
-                            $('#response').html(`<p class="success-message">${response.message}</p>
-                            <label>Data:</label>
-                            <pre>${JSON.stringify(response.data, null, 2)}</pre>`);
-                            $('#result').show();
+                       if (response.success) {
+                            $('#response').html(`<p class="success-message">${response.message}</p><label>Data:</label><pre>${JSON.stringify(response.data, null, 2)}</pre>`);
+                             $('#result').show();
                             saveSubdomain({host, target, type , domainName: domainName});
                             loadStoredSubdomains();
-                            localStorage.setItem('lastDomain',domainName);
-                            Swal.fire({
-                                title: 'Success!',
-                                text: response.message,
-                                icon: 'success',
-                                confirmButtonText: 'OK'
-                            });
-                        }else{
-                             $('#response').html(`<p class="error-message">${response.error}</p>`);
-                             $('#result').show();
-                            Swal.fire({
-                                title: 'Error!',
-                                text: response.error,
-                                icon: 'error',
-                                confirmButtonText: 'OK'
-                            });
-                        }
+                            localStorage.setItem('lastDomain', domainName);
+                            Swal.fire({ title: 'Success!', text: response.message, icon: 'success', confirmButtonText: 'OK' });
+                        } else {
+                            $('#response').html(`<p class="error-message">${response.error}</p>`);
+                            $('#result').show();
+                             Swal.fire({ title: 'Error!', text: response.error, icon: 'error', confirmButtonText: 'OK' });
+                       }
                     },
-                     error: function(xhr, status, error) {
-                         let errorMessage;
+                    error: function(xhr, status, error) {
+                        let errorMessage;
                         try {
                             const errorData = JSON.parse(xhr.responseText);
-                           errorMessage = errorData?.error ||  "An error occurred: "+ error;
-                            console.error("Error from server:", errorData);
-                            console.error("error:", errorMessage);
-                        } catch (e) {
-                           errorMessage = "An error occurred: "+ error;
-                            console.error("Could not parse error response:", xhr.responseText, e);
-                            console.error("error:", errorMessage);
-                        }
+                            errorMessage = errorData?.error || "Terjadi kesalahan: "+ error;
+                             console.error("Error from server:", errorData);
+                             console.error("error:", errorMessage);
+                       } catch (e) {
+                            errorMessage =  "Terjadi kesalahan: "+ error;
+                            console.error("Gagal parse respon error:", xhr.responseText, e);
+                             console.error("error:", errorMessage);
+                       }
                         $('#response').html(`<p class="error-message">${errorMessage}</p>`);
-                        $('#result').show();
-                         Swal.fire({
-                             title: 'Error!',
-                             text: errorMessage,
-                            icon: 'error',
-                             confirmButtonText: 'OK'
-                         });
-
+                         $('#result').show();
+                         Swal.fire({ title: 'Error!', text: errorMessage, icon: 'error', confirmButtonText: 'OK' });
                     }
                 });
             });
-              // Event listener for Dukun AI button
-            $('#ask-dukun').on('click', function() {
-                 const content = $('#dukun-content').val();
-                  if (content.trim() === "") {
-                       $('#dukun-response').html(`<p class="dukun-error-message">Tolong masukan pertanyaan</p>`);
-                       $('#dukun-result').show();
-                   } else {
-                       askDukun(content);
-                  }
-            });
             toggleTargetInput();
             loadStoredSubdomains();
-
-            // Event listener untuk tombol Check IP
-            $("#checkIpButton").click(function() {
-                const ipAddress = $("#ipAddress").val();
-                if (ipAddress) {
+             $("#checkIpButton").click(function() {
+                 const ipAddress = $("#ipAddress").val();
+                 if (ipAddress) {
                     checkIP(ipAddress);
                 } else {
-                    $("#ipCheckResult").html('<p class="error">Please enter an IP address.</p>');
+                    $("#ipCheckResult").html('<p class="error">Masukan IP.</p>');
                 }
             });
         });
