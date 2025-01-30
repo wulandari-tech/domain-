@@ -45,7 +45,6 @@ const cloudflare = [
 
 app.use(express.json());
 
-
 async function createDnsRecord(type, name, content, proxied, domainName) {
     const recordType = type.toUpperCase();
     if (!['A', 'CNAME'].includes(recordType)) {
@@ -73,20 +72,20 @@ async function createDnsRecord(type, name, content, proxied, domainName) {
                 },
             }
         );
-      if (response.data.success) {
-          const result = response.data.result;
-           return {
-               success: true,
-               zone: result.zone_name,
-               name: result.name,
-               type: result.type,
-               content: result.content,
-               proxied: result.proxied,
+        if (response.data.success) {
+            const result = response.data.result;
+            return {
+                success: true,
+                zone: result.zone_name,
+                name: result.name,
+                type: result.type,
+                content: result.content,
+                proxied: result.proxied,
             };
-      } else {
-         let error = response.data?.errors?.[0]?.message || response.data?.errors || "Unknown Cloudflare API error";
+        } else {
+            let error = response.data?.errors?.[0]?.message || response.data?.errors || "Unknown Cloudflare API error";
             throw new Error(error);
-      }
+        }
     } catch (error) {
          let errorMessage = error.response?.data?.errors?.[0]?.message || error.response?.data?.errors || error.message || error.response?.data || error.response || error;
        throw new Error(`Cloudflare API error: ${String(errorMessage)}`);
@@ -147,12 +146,12 @@ app.get('/dukun', async (req, res) => {
         const apiUrl = `https://api.siputzx.my.id/api/ai/dukun?content=${encodeURIComponent(text)}`;
         const apiResponse = await axios.get(apiUrl);
         const botResponse = apiResponse.data?.data || "Maaf, saya tidak bisa menjawab saat ini.";
-        res.json({
-            creator: "WANZOFC X TANIA",
-            result: true,
-            message: "sebut nama kamu",
-            data: botResponse
-        });
+         res.json({
+             creator: "WANZOFC X TANIA",
+             result: true,
+             message: "sebut nama kamu",
+             data: botResponse
+         });
     } catch (error) {
         console.error("Error wanz:", error.message);
         res.status(500).json({
@@ -160,6 +159,74 @@ app.get('/dukun', async (req, res) => {
             result: false,
             message: "Maaf, dukun sedang bermeditasi. Coba lagi nanti.",
             data: null
+        });
+    }
+});
+
+// Endpoint untuk Meta AI (kontol)
+app.get('/metaai', async (req, res) => {
+    const query = req.query.query;
+
+     if (!query || query.trim() === "") {
+        return res.status(400).json({
+            creator: "TANIA X WANZOFC",
+            result: false,
+            message: "Tolong tambahkan pertanyaan setelah parameter 'query'.",
+            data: null
+        });
+    }
+    try {
+        const apiUrl = `https://api.siputzx.my.id/api/ai/metaai?query=${encodeURIComponent(query)}`;
+        const apiResponse = await axios.get(apiUrl);
+        const botResponse = apiResponse.data?.result || "Maaf, saya tidak bisa menjawab saat ini.";
+        res.json({
+            creator: "WANZOFC X TANIA",
+            result: true,
+            message: "metaai",
+            data: botResponse
+        });
+    } catch (error) {
+        console.error("Error metaai:", error.message);
+       res.status(500).json({
+           creator: "WANZOFC X TANIA",
+            result: false,
+            message: "Maaf, Meta AI sedang bermasalah. Coba lagi nanti.",
+            data: null
+        });
+    }
+});
+
+// Endpoint untuk VCC Generator
+app.get('/vcc-generator', async (req, res) => {
+    const type = req.query.type;
+    const count = req.query.count;
+
+     if (!type || !count || type.trim() === "" || count.trim() === "") {
+        return res.status(400).json({
+            creator: "TANIA X WANZOFC",
+            result: false,
+            message: "Tolong tambahkan parameter 'type' dan 'count'.",
+            data: null
+        });
+    }
+
+    try {
+        const apiUrl = `https://api.siputzx.my.id/api/tools/vcc-generator?type=${encodeURIComponent(type)}&count=${encodeURIComponent(count)}`;
+         const apiResponse = await axios.get(apiUrl);
+        const vccData = apiResponse.data?.data || [];
+        res.json({
+            creator: "WANZOFC X TANIA",
+            result: true,
+            message: "berikut adalah data vcc anda",
+           data: vccData
+        });
+    } catch (error) {
+        console.error("Error VCC Generator:", error.message);
+         res.status(500).json({
+            creator: "WANZOFC X TANIA",
+            result: false,
+            message: "Maaf, VCC generator sedang bermasalah. Coba lagi nanti.",
+           data: null
         });
     }
 });
