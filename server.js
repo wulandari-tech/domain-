@@ -13,18 +13,25 @@ const CLOUDFLARE_TLD = "wanzofc.us.kg";
 // Middleware untuk memparsing body permintaan JSON
 app.use(express.json());
 
-// Fungsi untuk membuat subdomain di Cloudflare
-async function subDomain1(host, ip) {
+// Fungsi untuk membuat DNS Record (A atau CNAME) di Cloudflare
+async function createDnsRecord(type, name, content, proxied = false) {
+    const recordType = type.toUpperCase();
+
+    if (!['A', 'CNAME'].includes(recordType)) {
+       throw new Error("Tipe DNS record tidak valid. Harus 'A' atau 'CNAME'.");
+    }
+
+     const recordName = `${name.replace(/[^a-z0-9.-]/gi, "")}.${CLOUDFLARE_TLD}`;
+
     try {
         const response = await axios.post(
             `https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE}/dns_records`,
             {
-                type: "A",
-                name: `${host.replace(/[^a-z0-9.-]/gi, "")}.${CLOUDFLARE_TLD}`,
-                content: ip.replace(/[^0-9.]/gi, ""),
+                type: recordType,
+                name: recordName,
+                content: content,
                 ttl: 3600,
-                priority: 10,
-                proxied: false,
+                proxied: proxied,
             },
             {
                 headers: {
@@ -35,16 +42,17 @@ async function subDomain1(host, ip) {
         );
 
         if (response.data.success) {
-             const result = response.data.result;
-             return {
+            const result = response.data.result;
+            return {
                 success: true,
                 zone: result.zone_name,
                 name: result.name,
-                ip: result.content
-             };
+                type: result.type,
+                content: result.content,
+            };
         } else {
-             let error = response.data?.errors?.[0]?.message || response.data?.errors || "Unknown Cloudflare API error";
-            throw new Error(error);
+            let error = response.data?.errors?.[0]?.message || response.data?.errors || "Unknown Cloudflare API error";
+           throw new Error(error);
         }
 
     } catch (error) {
@@ -53,8 +61,9 @@ async function subDomain1(host, ip) {
     }
 }
 
-// Endpoint untuk membuat subdomain
-app.post('/create-subdomain', async (req, res) => {
+
+// Endpoint untuk membuat subdomain A record
+app.post('/create-a-record', async (req, res) => {
     const { host, ip } = req.body;
 
     if (!host || !ip) {
@@ -62,13 +71,31 @@ app.post('/create-subdomain', async (req, res) => {
     }
 
     try {
-        const result = await subDomain1(host, ip);
-        res.json({ success: true, message: 'Subdomain berhasil dibuat', data: result });
+        const result = await createDnsRecord('A', host, ip);
+        res.json({ success: true, message: 'A record berhasil dibuat', data: result });
     } catch (error) {
-        console.error("Error saat membuat subdomain:", error);
+        console.error("Error saat membuat A record:", error);
         res.status(500).json({ success: false, error: error.message });
     }
 });
+
+// Endpoint untuk membuat subdomain CNAME record
+app.post('/create-cname-record', async (req, res) => {
+    const { host, target } = req.body;
+
+     if (!host || !target) {
+         return res.status(400).json({ success: false, error: "Host dan Target wajib diisi." });
+     }
+
+    try {
+        const result = await createDnsRecord('CNAME', host, target, true);
+        res.json({ success: true, message: 'CNAME record berhasil dibuat', data: result });
+    } catch (error) {
+        console.error("Error saat membuat CNAME record:", error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
 
 // Endpoint utama untuk mengirim index.html
 app.get('/', (req, res) => {
