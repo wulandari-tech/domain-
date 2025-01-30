@@ -170,6 +170,32 @@
                 grid-column: 1 / 3;
             }
         }
+        .domain-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .domain-options-btn {
+            background-color: #f8f9fa; /* Warna latar belakang tombol */
+            color: #495057; /* Warna teks tombol */
+            border: 1px solid #ced4da; /* Warna border tombol */
+            border-radius: 4px;
+            padding: 8px 12px;
+            cursor: pointer;
+            margin-left: 10px; /* Jarak antara dropdown dan tombol */
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .domain-options-btn:hover {
+            background-color: #e9ecef; /* Warna latar belakang tombol saat hover */
+            border-color: #adb5bd; /* Warna border tombol saat hover */
+        }
+
+        .domain-options-btn:focus {
+            outline: none; /* Menghilangkan outline default saat fokus */
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Efek fokus (opsional) */
+        }
     </style>
 </head>
 <body>
@@ -199,14 +225,18 @@
             </div>
          </div>
             <label for="domainName">PILIH DOMAIN:</label>
-            <select id="domainName" name="domainName">
-                <option value="wanzofc.us.kg">wanzofc.us.kg</option>
-                <option value="awan-attack.my.id">awan-attack.my.id</option>
-                <option value="awanbrayy.web.id">awanbrayy.web.id</option>
-                <option value="behind-the-scenes.xyz">behind-the-scenes.xyz</option>
-                <option value="wanzofc.xyz">wanzofc.xyz</option>
-               <option value="domain-test.co">domain-test.co</option>
-            </select>
+            <div class="domain-group">
+                <select id="domainName" name="domainName">
+                    <option value="wanzofc.us.kg">wanzofc.us.kg</option>
+                    <option value="awan-attack.my.id">awan-attack.my.id</option>
+                    <option value="awanbrayy.web.id">awanbrayy.web.id</option>
+                    <option value="behind-the-scenes.xyz">behind-the-scenes.xyz</option>
+                    <option value="wanzofc.xyz">wanzofc.xyz</option>
+                   <option value="domain-test.co">domain-test.co</option>
+                </select>
+                <button type="button" class="domain-options-btn" onclick="domainOptionsClicked()">Opsi</button>
+            </div>
+
              <label for="proxied">Proxy Status:</label>
             <select id="proxied" name="proxied">
                 <option value="true">PROXIED (CDN ENABLED)</option>
@@ -346,6 +376,11 @@
                 responseDiv.innerHTML = `<p class="error-message">Terjadi kesalahan: ${error.message}</p>`;
             }
         });
+
+        function domainOptionsClicked() {
+            alert('Tombol Opsi Domain Diklik!'); // Ini hanya contoh, ganti dengan fungsi yang Anda inginkan
+        }
+
          toggleTargetInput();
          AOS.init();
     </script>
