@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> 
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> --> <!-- Axios dihapus -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
 
     <style>
         body {
             font-family: sans-serif;
             margin: 0;
-            background-color: #f8f9fa; 
+            background-color: #f8f9fa;
             color: #495057;
         }
         h1 {
@@ -131,6 +131,7 @@
             background-color: #0056b3;
         }
          #result {
+            display: none; /* Result area di hide karena AJAX dihapus */
             margin-top: 20px;
             padding: 15px;
             background-color: #e9ecef; /* Lighter result background */
@@ -223,7 +224,7 @@
             border-radius: 50%;
             animation: spinner-border .75s linear infinite;
             margin-left: 5px;
-            opacity: 1; /* Make sure it's visible when loading */
+            opacity: 0;
         }
 
         @keyframes spinner-border {
@@ -279,11 +280,9 @@
                 <div id="response"></div>
             </div>
         </form>
-
          <div id="subdomainList">
             <label>SUBDOMAIN TERSIMPAN:</label>
             <ul id="storedSubdomains">
-                <!-- Daftar subdomain akan diisi di sini oleh JavaScript -->
             </ul>
         </div>
 
@@ -291,8 +290,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        const API_CREATE_A_RECORD_URL = '/create-a-record'; // Define API URL constants
-        const API_CREATE_CNAME_RECORD_URL = '/create-cname-record';
+        // const API_CREATE_A_RECORD_URL = '/create-a-record'; // Konstanta API dihapus
+        // const API_CREATE_CNAME_RECORD_URL = '/create-cname-record'; // Konstanta API dihapus
 
         function openNav() {
             document.getElementById("mySidebar").style.width = "250px";
@@ -441,8 +440,7 @@
                 $("#domainName").val(lastDomain);
             }
             $("#subdomainForm").submit(function(event) {
-                event.preventDefault();
-
+                event.preventDefault(); // Form tidak akan submit secara default
                 if (!validateInput()) {
                     return;
                 }
@@ -451,65 +449,18 @@
                 const type = $("#type").val();
                 const domainName = $("#domainName").val();
                 const proxied = $("#proxied").val();
-                localStorage.setItem('lastDomain', domainName);
-                const responseDiv = $("#response");
-                responseDiv.html('Loading ... <span class="loading-indicator"></span>');
-                let apiUrl;
-                let requestBody;
 
-                if(type === 'A'){
-                    apiUrl = API_CREATE_A_RECORD_URL;
-                    requestBody = { host: host, ip: target, domainName: domainName, proxied: proxied };
-                } else if (type === 'CNAME'){
-                    apiUrl = API_CREATE_CNAME_RECORD_URL;
-                    requestBody = { host: host, target: target, domainName: domainName, proxied: proxied };
-                } else {
-                    responseDiv.html('<p class="error-message">Tipe record tidak valid.</p>');
-                    return;
-                }
+                saveSubdomain({host, target, type , domainName: domainName}); // Simpan data ke local storage saja
+                loadStoredSubdomains(); // Refresh daftar subdomain
 
-                $.ajax({
-                    url: apiUrl,
-                    type: "POST",
-                    contentType: 'application/json',
-                    data: JSON.stringify(requestBody),
-                    dataType: 'json',
-                    success: function(data) {
-                        responseDiv.html('');
-                        if (data.success) {
-                            const message = data.message || "Subdomain created successfully";
-                            responseDiv.html(`<p class="success-message">${message}</p><pre>${JSON.stringify(data.data, null, 2)}</pre>`);
-                            saveSubdomain({host, target, type , data: data.data,message:message, domainName: domainName});
-                            loadStoredSubdomains();
-
-                            Swal.fire({
-                                title: 'Success!',
-                                text: message,
-                                icon: 'success',
-                                confirmButtonText: 'OK'
-                            });
-
-                        } else {
-                            responseDiv.html(`<p class="error-message">Error: ${data.error}</p>`);
-                            Swal.fire({
-                                title: 'Error!',
-                                text: data.error,
-                                icon: 'error',
-                                confirmButtonText: 'OK'
-                            });
-                        }
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        responseDiv.html('');
-                        responseDiv.html(`<p class="error-message">Terjadi kesalahan: ${textStatus}, ${errorThrown}. Detail: ${jqXHR.responseText ? jqXHR.responseText : 'No details available'}</p>`);
-                        Swal.fire({
-                            title: 'AJAX Error!',
-                            html: `Terjadi kesalahan saat menghubungi server: ${textStatus}, ${errorThrown}. <br><br> Detail: <pre style="text-align: left;">${jqXHR.responseText ? jqXHR.responseText : 'No details available'}</pre>`,
-                            icon: 'error',
-                            confirmButtonText: 'OK'
-                        });
-                    }
+                Swal.fire({ // Tampilkan sukses hanya di frontend
+                    title: 'Success!',
+                    text: 'Subdomain data saved to local storage (No API call made).',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
                 });
+
+
             });
             toggleTargetInput();
             loadStoredSubdomains();
