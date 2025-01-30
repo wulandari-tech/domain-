@@ -357,6 +357,174 @@
             transform: translateY(-50%);
             vertical-align: middle;
         }
+         /* Styles for Meta AI in sidebar */
+         .metaai-container {
+            padding: 10px;
+        }
+
+        .metaai-label {
+            display: block;
+             margin-bottom: 5px;
+            color: #fff;
+        }
+         .metaai-textarea {
+             width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+             background-color: #495057;
+             color: #fff;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box;
+             min-height: 80px;
+              resize: vertical;
+        }
+        .metaai-button {
+            background-color: #007bff;
+            color: white;
+            padding: 8px 12px;
+             border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+             width: 100%;
+             position: relative;
+              margin-bottom: 10px;
+        }
+
+        .metaai-button:hover {
+            background-color: #0056b3;
+        }
+        .metaai-result {
+             padding: 8px;
+           margin-top: 10px;
+             background-color: #e9ecef;
+            border: 1px solid #dee2e6;
+             border-radius: 4px;
+            overflow-x: auto;
+              display: none;
+           color: #343a40;
+        }
+        .metaai-result label {
+          font-weight: bold;
+           display: block;
+            margin-bottom: 10px;
+        }
+        .metaai-result pre{
+             background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+            border: 1px solid #ced4da;
+        }
+         .metaai-error-message {
+             color: red;
+            font-weight: bold;
+        }
+         /* Style untuk loading indicator pada tombol Meta AI */
+        .metaai-button .loading-indicator {
+            margin-left: 0; /* Hapus margin agar spinner berada di tengah tombol */
+            margin-right: 5px;
+             position: absolute;
+            top: 50%;
+            left: 10px; /* Adjust as needed */
+            transform: translateY(-50%);
+            vertical-align: middle;
+        }
+         /* Styles for VCC Generator in sidebar */
+        .vcc-container {
+            padding: 10px;
+        }
+
+        .vcc-label {
+            display: block;
+             margin-bottom: 5px;
+            color: #fff;
+        }
+         .vcc-select {
+              width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+             background-color: #495057;
+             color: #fff;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box;
+            appearance: none;
+           -webkit-appearance: none;
+            -moz-appearance: none;
+           background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="6" fill="white"><polygon points="0,0 10,0 5,6"/></svg>');
+          background-repeat: no-repeat;
+         background-position: right 8px center;
+         background-size: 10px;
+        }
+         .vcc-input-count {
+              width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+             background-color: #495057;
+             color: #fff;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .vcc-button {
+             background-color: #007bff;
+            color: white;
+            padding: 8px 12px;
+             border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+             width: 100%;
+              position: relative;
+              margin-bottom: 10px;
+        }
+        .vcc-button:hover {
+            background-color: #0056b3;
+        }
+        .vcc-result {
+             padding: 8px;
+           margin-top: 10px;
+             background-color: #e9ecef;
+            border: 1px solid #dee2e6;
+             border-radius: 4px;
+            overflow-x: auto;
+              display: none;
+           color: #343a40;
+        }
+        .vcc-result label {
+          font-weight: bold;
+           display: block;
+            margin-bottom: 10px;
+        }
+        .vcc-result pre{
+             background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+            border: 1px solid #ced4da;
+        }
+         .vcc-error-message {
+             color: red;
+            font-weight: bold;
+        }
+        /* Style untuk loading indicator pada tombol VCC */
+        .vcc-button .loading-indicator {
+           margin-left: 0; /* Hapus margin agar spinner berada di tengah tombol */
+            margin-right: 5px;
+             position: absolute;
+            top: 50%;
+            left: 10px; /* Adjust as needed */
+            transform: translateY(-50%);
+            vertical-align: middle;
+        }
     </style>
 </head>
 <body>
@@ -374,6 +542,34 @@
               <label>hasil misteri</label>
                  <div id="dukun-response"></div>
              </div>
+        </div>
+        <div class="metaai-container">
+            <label class="metaai-label" for="metaai-content">tanya meta ai</label>
+            <textarea class="metaai-textarea" id="metaai-content" placeholder="Masukan pertanyaan..."></textarea>
+            <button class="metaai-button" id="ask-metaai">
+                 <span class="loading-indicator" id="metaaiLoading"></span>
+                Tanya
+            </button>
+              <div class="metaai-result" id="metaai-result">
+              <label>hasil meta ai</label>
+                 <div id="metaai-response"></div>
+             </div>
+        </div>
+         <div class="vcc-container">
+            <label class="vcc-label" for="vcc-type">VCC Generator</label>
+            <select id="vcc-type" class="vcc-select">
+                <option value="visa">Visa</option>
+                <option value="mastercard">Mastercard</option>
+            </select>
+            <input type="number" id="vcc-count" class="vcc-input-count" placeholder="Jumlah VCC">
+            <button class="vcc-button" id="generate-vcc">
+                <span class="loading-indicator" id="vccLoading"></span>
+                Generate
+            </button>
+            <div class="vcc-result" id="vcc-result">
+                <label>Hasil VCC:</label>
+                <div id="vcc-response"></div>
+            </div>
         </div>
     </div>
     <button class="openbtn" onclick="openNav()">☰</button>
@@ -592,7 +788,7 @@
             }, 2000); // Delay 2 detik
         }
 
-          // Function for Dukun AI request
+         // Function for Dukun AI request
         function askDukun(content) {
              $("#dukunLoading").css("opacity", "1");
             $.ajax({
@@ -626,6 +822,82 @@
                         }
                        $('#dukun-response').html(`<p class="dukun-error-message">${errorMessage}</p>`);
                         $("#dukun-result").show();
+                }
+            });
+        }
+
+            // Function for Meta AI request
+        function askMetaAI(query) {
+            $("#metaaiLoading").css("opacity", "1");
+            $.ajax({
+                url: '/metaai',
+                type: 'GET',
+                data: { query: query },
+                success: function (response) {
+                    $("#metaaiLoading").css("opacity", "0");
+                     if (response.result) {
+                         $('#metaai-response').html(`
+                           <label>Jawaban Meta AI:</label>
+                             <pre>${JSON.stringify(response.data, null, 2)}</pre>`);
+                        $("#metaai-result").show();
+                    } else {
+                        $('#metaai-response').html(`<p class="metaai-error-message">${response.message}</p>`);
+                         $("#metaai-result").show();
+                    }
+                },
+                error: function(xhr, status, error) {
+                     $("#metaaiLoading").css("opacity", "0");
+                    let errorMessage;
+                        try {
+                            const errorData = JSON.parse(xhr.responseText);
+                            errorMessage = errorData?.message ||  "An error occurred: "+ error;
+                             console.error("Error from server:", errorData);
+                            console.error("error:", errorMessage);
+                        } catch (e) {
+                            errorMessage = "An error occurred: "+ error;
+                            console.error("Could not parse error response:", xhr.responseText, e);
+                            console.error("error:", errorMessage);
+                        }
+                       $('#metaai-response').html(`<p class="metaai-error-message">${errorMessage}</p>`);
+                         $("#metaai-result").show();
+                }
+            });
+        }
+
+        // Function for VCC Generator request
+        function generateVCC(type, count) {
+             $("#vccLoading").css("opacity", "1");
+            $.ajax({
+                url: '/vcc-generator',
+                type: 'GET',
+                data: { type: type, count: count },
+                success: function (response) {
+                     $("#vccLoading").css("opacity", "0");
+                     if (response.result) {
+                         $('#vcc-response').html(`
+                           <label>Hasil VCC:</label>
+                            <pre>${JSON.stringify(response.data, null, 2)}</pre>`);
+                          $("#vcc-result").show();
+                     } else {
+                         $('#vcc-response').html(`<p class="vcc-error-message">${response.message}</p>`);
+                          $("#vcc-result").show();
+                    }
+                },
+                error: function(xhr, status, error) {
+                     $("#vccLoading").css("opacity", "0");
+                     let errorMessage;
+                        try {
+                             const errorData = JSON.parse(xhr.responseText);
+                             errorMessage = errorData?.message || "An error occurred: "+ error;
+                            console.error("Error from server:", errorData);
+                             console.error("error:", errorMessage);
+                        } catch (e) {
+                             errorMessage = "An error occurred: "+ error;
+                            console.error("Could not parse error response:", xhr.responseText, e);
+                            console.error("error:", errorMessage);
+                        }
+                        $('#vcc-response').html(`<p class="vcc-error-message">${errorMessage}</p>`);
+                        $("#vcc-result").show();
                 }
             });
         }
@@ -717,6 +989,29 @@
                    } else {
                        askDukun(content);
                   }
+            });
+
+             // Event listener for Meta AI button
+            $('#ask-metaai').on('click', function() {
+                const query = $('#metaai-content').val();
+                if (query.trim() === "") {
+                     $('#metaai-response').html(`<p class="metaai-error-message">Tolong masukan pertanyaan</p>`);
+                      $('#metaai-result').show();
+                } else {
+                     askMetaAI(query);
+                }
+            });
+
+            // Event listener for VCC Generator button
+           $('#generate-vcc').on('click', function() {
+                const type = $('#vcc-type').val();
+                const count = $('#vcc-count').val();
+               if (count <= 0) {
+                     $('#vcc-response').html(`<p class="vcc-error-message">Jumlah VCC harus lebih dari 0</p>`);
+                        $('#vcc-result').show();
+                } else {
+                      generateVCC(type, count);
+                }
             });
             toggleTargetInput();
             loadStoredSubdomains();
