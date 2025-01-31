@@ -520,6 +520,7 @@
         <a href="vcc-generator?type=MasterCard&count=5" target="_blank"><i class="fas fa-code"></i> vcc api</a>
         <a href="dukun?content=halo" target="_blank"><i class="fas fa-code"></i> dukun api</a>
         <a href="metaai?query=halo" target="_blank"><i class="fas fa-code"></i> meta ai api</a>
+        <a href="subdomains?domain=awan-attack.my.id" target="_blank"><i class="fas fa-code"></i> subdomain finder api</a>
         <a href="tiktok?url=https://vt.tiktok.com/ZSjXNEnbC" target="_blank"><i class="fas fa-code"></i> tiktokdl api</a>
         <a href="s/tiktok?query=elaina" target="_blank"><i class="fas fa-code"></i> tiktok search api</a>
        <a href="igdl?url=https://www.instagram.com/p/DCQhOuXTRvE/?img_index=1&igsh=MWF2dXU3aWtpazY2NQ==" target="_blank"><i class="fas fa-code"></i> igdl api</a> 
@@ -804,246 +805,281 @@
                 }
             });
         }
-        function askMetaAI(query) {
-            $("#metaaiLoading").css("opacity", "1");
-            $.ajax({
-                url: '/metaai',
-                type: 'GET',
-                data: { query: query },
-                success: function (response) {
-                    $("#metaaiLoading").css("opacity", "0");
-                     if (response.result) {
-                         $('#metaai-response').html(`
-                           <label>Jawaban Meta AI:</label>
-                             <pre>${JSON.stringify(response.data, null, 2)}</pre>`);
-                        $("#metaai-result").show();
-                    } else {
-                        $('#metaai-response').html(`<p class="metaai-error-message">${response.message}</p>`);
-                         $("#metaai-result").show();
-                    }
-                },
-                error: function(xhr, status, error) {
-                     $("#metaaiLoading").css("opacity", "0");
-                    let errorMessage;
-                        try {
-                            const errorData = JSON.parse(xhr.responseText);
-                            errorMessage = errorData?.message ||  "An error occurred: "+ error;
-                             console.error("Error from server:", errorData);
-                            console.error("error:", errorMessage);
-                        } catch (e) {
-                            errorMessage = "An error occurred: "+ error;
-                            console.error("Could not parse error response:", xhr.responseText, e);
-                            console.error("error:", errorMessage);
-                        }
-                       $('#metaai-response').html(`<p class="metaai-error-message">${errorMessage}</p>`);
-                         $("#metaai-result").show();
-                }
-            });
-        }
-        function generateVCC(type, count) {
-             $("#vccLoading").css("opacity", "1");
-            $.ajax({
-                url: '/vcc-generator',
-                type: 'GET',
-                data: { type: type, count: count },
-                success: function (response) {
-                     $("#vccLoading").css("opacity", "0");
-                     if (response.result) {
-                         $('#vcc-response').html(`
-                           <label>Hasil VCC:</label>
-                            <pre>${JSON.stringify(response.data, null, 2)}</pre>`);
-                          $("#vcc-result").show();
-                     } else {
-                         $('#vcc-response').html(`<p class="vcc-error-message">${response.message}</p>`);
-                          $("#vcc-result").show();
-                    }
-                },
-                error: function(xhr, status, error) {
-                     $("#vccLoading").css("opacity", "0");
-                     let errorMessage;
-                        try {
-                             const errorData = JSON.parse(xhr.responseText);
-                             errorMessage = errorData?.message || "An error occurred: "+ error;
-                            console.error("Error from server:", errorData);
-                             console.error("error:", errorMessage);
-                        } catch (e) {
-                             errorMessage = "An error occurred: "+ error;
-                            console.error("Could not parse error response:", xhr.responseText, e);
-                            console.error("error:", errorMessage);
-                        }
-                        $('#vcc-response').html(`<p class="vcc-error-message">${errorMessage}</p>`);
-                        $("#vcc-result").show();
-                }
-            });
-        }
-    function tiktokDownloader(url) {
-        callAPI(
-            '/tiktok',
-            {
-                url: url
-            },
-            "#tiktokLoading",
-             "#tiktok-response",
-            "#tiktok-result"
-        );
-    }
-    function searchTiktok(query) {
-        callAPI(
-            '/s/tiktok',
-            {
-                query: query
-            },
-            "#searchTiktokLoading",
-            "#searchTiktok-response",
-            "#searchTiktok-result"
-        );
-    }
-    function instagramDownloader(url) {
-         callAPI(
-            '/igdl',
-            {
-                url: url
-            },
-           "#igdlLoading",
-            "#igdl-response",
-            "#igdl-result"
-        );
-    }
-        $(document).ready(function() {
-            const lastDomain = localStorage.getItem('lastDomain');
-            if (lastDomain) {
-                $("#domainName").val(lastDomain);
-            }
-            $("#subdomainForm").submit(function(event) {
-                event.preventDefault();
-                if (!validateInput()) {
-                    return;
-                }
-                const host = $("#host").val();
-                const target = $("#target").val();
-                const type = $("#type").val();
-                const domainName = $("#domainName").val();
-                const proxied = $("#proxied").val();
+function askDukun(content) {
+  callAPI(
+    '/dukun',
+    {
+        content: content
+    },
+    "#dukunLoading",
+     "#dukun-response",
+    "#dukun-result"
+  );
+}
 
-                const apiEndpoint = type === 'A' ? '/create-a-record' : '/create-cname-record';
-                 $.ajax({
-                    url: apiEndpoint,
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        host: host,
-                        target: target,
-                        domainName: domainName,
-                         proxied: proxied,
-                    }),
-                    success: function(response) {
-                         console.log("API Response:", response);
-                        if (response.success) {
-                            $('#response').html(`<p class="success-message">${response.message}</p>
-                            <label>Data:</label>
-                            <pre>${JSON.stringify(response.data, null, 2)}</pre>`);
-                            $('#result').show();
-                            saveSubdomain({host, target, type , domainName: domainName});
-                            loadStoredSubdomains();
-                            localStorage.setItem('lastDomain',domainName);
-                            Swal.fire({
-                                title: 'Success!',
-                                text: response.message,
-                                icon: 'success',
-                                confirmButtonText: 'OK'
-                            });
-                        }else{
-                             $('#response').html(`<p class="error-message">${response.error}</p>`);
-                             $('#result').show();
-                            Swal.fire({
-                                title: 'Error!',
-                                text: response.error,
-                                icon: 'error',
-                                confirmButtonText: 'OK'
-                            });
-                        }
-                    },
-                     error: function(xhr, status, error) {
-                         let errorMessage;
-                        try {
-                            const errorData = JSON.parse(xhr.responseText);
-                           errorMessage = errorData?.error ||  "An error occurred: "+ error;
-                            console.error("Error from server:", errorData);
-                            console.error("error:", errorMessage);
-                        } catch (e) {
-                           errorMessage = "An error occurred: "+ error;
-                            console.error("Could not parse error response:", xhr.responseText, e);
-                            console.error("error:", errorMessage);
-                        }
-                        $('#response').html(`<p class="error-message">${errorMessage}</p>`);
-                        $('#result').show();
-                         Swal.fire({
-                             title: 'Error!',
-                             text: errorMessage,
-                            icon: 'error',
-                             confirmButtonText: 'OK'
-                         });
+function askMetaAI(query) {
+    callAPI(
+        '/metaai',
+        {
+            query: query
+        },
+        "#metaaiLoading",
+         "#metaai-response",
+        "#metaai-result"
+    );
+}
 
-                    }
-                });
-            });
-            $('#ask-dukun').on('click', function() {
-                 const content = $('#dukun-content').val();
-                  if (content.trim() === "") {
-                       $('#dukun-response').html(`<p class="dukun-error-message">Tolong masukan pertanyaan</p>`);
-                       $('#dukun-result').show();
-                   } else {
-                       askDukun(content);
-                  }
-            });
-            $('#ask-metaai').on('click', function() {
-                const query = $('#metaai-content').val();
-                if (query.trim() === "") {
-                     $('#metaai-response').html(`<p class="metaai-error-message">Tolong masukan pertanyaan</p>`);
-                      $('#metaai-result').show();
-                } else {
-                     askMetaAI(query);
-                }
-            });
-           $('#generate-vcc').on('click', function() {
-                const type = $('#vcc-type').val();
-                const count = $('#vcc-count').val();
-               if (count <= 0) {
-                     $('#vcc-response').html(`<p class="vcc-error-message">Jumlah VCC harus lebih dari 0</p>`);
-                        $('#vcc-result').show();
-                } else {
-                      generateVCC(type, count);
-                }
-            });
-         $('#tiktok-download').on('click', function () {
-             const url = $('#tiktok-url').val();
-             if (url.trim() === "") {
-                 $('#tiktok-response').html(`<p class="api-error-message">Tolong masukan URL tiktok</p>`);
-                 $('#tiktok-result').show();
-             } else {
-                 tiktokDownloader(url);
-             }
-         });
-        $('#search-tiktok').on('click', function () {
-            const query = $('#search-tiktok-query').val();
-            if (query.trim() === "") {
-               $('#searchTiktok-response').html(`<p class="api-error-message">Tolong masukan keyword pencarian</p>`);
-               $('#searchTiktok-result').show();
-            } else {
-                 searchTiktok(query);
+function generateVCC(type, count) {
+   callAPI(
+        '/vcc-generator',
+        {
+            type: type,
+            count: count
+        },
+         "#vccLoading",
+         "#vcc-response",
+        "#vcc-result"
+    );
+}
+
+
+function tiktokDownloader(url) {
+  callAPI(
+    '/tiktok',
+    {
+      url: url
+    },
+    "#tiktokLoading",
+    "#tiktok-response",
+    "#tiktok-result"
+  );
+}
+function searchTiktok(query) {
+    callAPI(
+        '/s/tiktok',
+        {
+            query: query
+        },
+        "#searchTiktokLoading",
+        "#searchTiktok-response",
+        "#searchTiktok-result"
+    );
+}
+function instagramDownloader(url) {
+    callAPI(
+        '/igdl',
+        {
+            url: url
+        },
+        "#igdlLoading",
+         "#igdl-response",
+        "#igdl-result"
+    );
+}
+
+function findSubdomains(domain) {
+    callAPI(
+        '/subdomains',
+        {
+            domain: domain
+        },
+        "#subdomainLoading",
+        "#subdomain-response",
+        "#subdomain-result"
+    );
+}
+
+function checkIP(ipAddress) {
+    $("#ipCheckLoading").css("opacity", "1");
+    $.ajax({
+      url: `https://ipapi.co/${ipAddress}/json/`,
+      type: 'GET',
+      success: function(response) {
+        $("#ipCheckLoading").css("opacity", "0");
+           if(response){
+               $('#ipCheckResult').html(`
+                    <label>IP Information:</label>
+                     <pre>${JSON.stringify(response, null, 2)}</pre>`);
+                 $("#ipCheckResult").show();
+           }else{
+                $("#ipCheckResult").html('<p class="error">Failed to fetch IP information.</p>');
+                $("#ipCheckResult").show();
+           }
+
+      },
+     error: function(xhr, status, error) {
+            $("#ipCheckLoading").css("opacity", "0");
+            let errorMessage;
+            try {
+                const errorData = JSON.parse(xhr.responseText);
+                errorMessage = errorData?.message || "An error occurred: " + error;
+                console.error("Error from server:", errorData);
+                console.error("error:", errorMessage);
+            } catch (e) {
+                errorMessage = "An error occurred: " + error;
+                console.error("Could not parse error response:", xhr.responseText, e);
+                console.error("error:", errorMessage);
             }
-         });
-            toggleTargetInput();
-            loadStoredSubdomains();
-            $("#checkIpButton").click(function() {
-                const ipAddress = $("#ipAddress").val();
-                if (ipAddress) {
-                    checkIP(ipAddress);
-                } else {
-                    $("#ipCheckResult").html('<p class="error">Please enter an IP address.</p>');
+            $('#ipCheckResult').html(`<p class="error">${errorMessage}</p>`);
+             $("#ipCheckResult").show();
+        }
+    });
+}
+
+
+$(document).ready(function() {
+    const lastDomain = localStorage.getItem('lastDomain');
+    if (lastDomain) {
+        $("#domainName").val(lastDomain);
+    }
+    $("#subdomainForm").submit(function(event) {
+        event.preventDefault();
+        if (!validateInput()) {
+            return;
+        }
+        const host = $("#host").val();
+        const target = $("#target").val();
+        const type = $("#type").val();
+        const domainName = $("#domainName").val();
+        const proxied = $("#proxied").val();
+        const apiEndpoint = type === 'A' ? '/create-a-record' : '/create-cname-record';
+        $.ajax({
+            url: apiEndpoint,
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                host: host,
+                target: target,
+                domainName: domainName,
+                proxied: proxied,
+            }),
+            success: function(response) {
+                 console.log("API Response:", response);
+                if (response.success) {
+                    $('#response').html(`<p class="success-message">${response.message}</p>
+                    <label>Data:</label>
+                    <pre>${JSON.stringify(response.data, null, 2)}</pre>`);
+                    $('#result').show();
+                    saveSubdomain({host, target, type , domainName: domainName});
+                    loadStoredSubdomains();
+                    localStorage.setItem('lastDomain',domainName);
+                    Swal.fire({
+                        title: 'Success!',
+                        text: response.message,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    });
+                }else{
+                     $('#response').html(`<p class="error-message">${response.error}</p>`);
+                     $('#result').show();
+                    Swal.fire({
+                        title: 'Error!',
+                        text: response.error,
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
                 }
-            });
+            },
+             error: function(xhr, status, error) {
+                let errorMessage;
+                try {
+                    const errorData = JSON.parse(xhr.responseText);
+                   errorMessage = errorData?.error ||  "An error occurred: "+ error;
+                    console.error("Error from server:", errorData);
+                    console.error("error:", errorMessage);
+                } catch (e) {
+                   errorMessage = "An error occurred: "+ error;
+                    console.error("Could not parse error response:", xhr.responseText, e);
+                    console.error("error:", errorMessage);
+                }
+                $('#response').html(`<p class="error-message">${errorMessage}</p>`);
+                $('#result').show();
+                 Swal.fire({
+                     title: 'Error!',
+                     text: errorMessage,
+                    icon: 'error',
+                     confirmButtonText: 'OK'
+                 });
+
+            }
         });
+    });
+     $('#ask-dukun').on('click', function() {
+         const content = $('#dukun-content').val();
+          if (content.trim() === "") {
+               $('#dukun-response').html(`<p class="dukun-error-message">Tolong masukan pertanyaan</p>`);
+               $('#dukun-result').show();
+           } else {
+               askDukun(content);
+          }
+    });
+    $('#ask-metaai').on('click', function() {
+        const query = $('#metaai-content').val();
+        if (query.trim() === "") {
+             $('#metaai-response').html(`<p class="metaai-error-message">Tolong masukan pertanyaan</p>`);
+              $('#metaai-result').show();
+        } else {
+             askMetaAI(query);
+        }
+    });
+   $('#generate-vcc').on('click', function() {
+        const type = $('#vcc-type').val();
+        const count = $('#vcc-count').val();
+       if (count <= 0) {
+             $('#vcc-response').html(`<p class="vcc-error-message">Jumlah VCC harus lebih dari 0</p>`);
+                $('#vcc-result').show();
+        } else {
+              generateVCC(type, count);
+        }
+    });
+     $('#tiktok-download').on('click', function () {
+         const url = $('#tiktok-url').val();
+         if (url.trim() === "") {
+             $('#tiktok-response').html(`<p class="api-error-message">Tolong masukan URL tiktok</p>`);
+             $('#tiktok-result').show();
+         } else {
+             tiktokDownloader(url);
+         }
+     });
+    $('#search-tiktok').on('click', function () {
+        const query = $('#search-tiktok-query').val();
+        if (query.trim() === "") {
+           $('#searchTiktok-response').html(`<p class="api-error-message">Tolong masukan keyword pencarian</p>`);
+           $('#searchTiktok-result').show();
+        } else {
+             searchTiktok(query);
+        }
+     });
+     $('#igdl-download').on('click', function () {
+        const url = $('#igdl-url').val();
+        if (url.trim() === "") {
+            $('#igdl-response').html(`<p class="api-error-message">Tolong masukan URL instagram</p>`);
+            $('#igdl-result').show();
+        } else {
+           instagramDownloader(url);
+        }
+    });
+
+     $('#find-subdomains').on('click', function () {
+        const domain = $('#subdomain-domain').val();
+        if (domain.trim() === "") {
+            $('#subdomain-response').html(`<p class="api-error-message">Tolong masukan domain yang ingin di cari</p>`);
+            $('#subdomain-result').show();
+        } else {
+           findSubdomains(domain);
+        }
+    });
+    toggleTargetInput();
+    loadStoredSubdomains();
+    $("#checkIpButton").click(function() {
+        const ipAddress = $("#ipAddress").val();
+        if (ipAddress) {
+            checkIP(ipAddress);
+        } else {
+            $("#ipCheckResult").html('<p class="error">Please enter an IP address.</p>');
+        }
+    });
+});
     </script>
 </body>
 </html>
