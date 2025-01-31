@@ -337,6 +337,53 @@ app.get('/s/tiktok', async (req, res) => {
     }
 });
 
+// Endpoint untuk Subdomain Finder
+app.get('/subdomains', async (req, res) => {
+    const domain = req.query.domain;
+
+    if (!domain || domain.trim() === "") {
+        return res.status(400).json({
+            creator: "TANIA X WANZOFC",
+            result: false,
+            message: "Tolong tambahkan parameter 'domain'.",
+            data: null
+        });
+    }
+
+    try {
+        const apiUrl = `https://api.siputzx.my.id/api/tools/subdomains?domain=${encodeURIComponent(domain)}`;
+        const apiResponse = await axios.get(apiUrl);
+        const subdomainsData = apiResponse.data || {}; // Tangani jika apiResponse.data null atau undefined
+
+        // Periksa apakah respons API berhasil sebelum mengirim data
+        if (subdomainsData.status === true || subdomainsData.success === true) { // cek kunci status atau success
+          res.json({
+            creator: "WANZOFC X TANIA",
+            result: true,
+            message: "Berikut adalah subdomain yang ditemukan:",
+            data: subdomainsData.data || subdomainsData.result || [] // Gunakan data atau result, tergantung dari API
+          });
+
+        } else {
+          // Tangani jika API mengembalikan status false atau error
+          res.status(500).json({
+            creator: "WANZOFC X TANIA",
+            result: false,
+            message: subdomainsData.message || "Gagal mengambil data subdomain.", // Menampilkan pesan error dari API jika ada
+            data: null
+          });
+        }
+    } catch (error) {
+        console.error("Error Subdomain Finder:", error.message);
+        res.status(500).json({
+            creator: "WANZOFC X TANIA",
+            result: false,
+            message: "Maaf, terjadi kesalahan saat mencari subdomain. Coba lagi nanti.",
+            data: null
+        });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Server berjalan di http://localhost:${PORT}`);
 });
