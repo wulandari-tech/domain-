@@ -873,7 +873,39 @@
                 }
             });
         }
-
+    function tiktokDownloader(url) {
+        callAPI(
+            '/tiktok',
+            {
+                url: url
+            },
+            "#tiktokLoading",
+             "#tiktok-response",
+            "#tiktok-result"
+        );
+    }
+    function searchTiktok(query) {
+        callAPI(
+            '/s/tiktok',
+            {
+                query: query
+            },
+            "#searchTiktokLoading",
+            "#searchTiktok-response",
+            "#searchTiktok-result"
+        );
+    }
+    function instagramDownloader(url) {
+         callAPI(
+            '/igdl',
+            {
+                url: url
+            },
+           "#igdlLoading",
+            "#igdl-response",
+            "#igdl-result"
+        );
+    }
         $(document).ready(function() {
             const lastDomain = localStorage.getItem('lastDomain');
             if (lastDomain) {
