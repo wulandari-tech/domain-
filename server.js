@@ -231,6 +231,112 @@ app.get('/vcc-generator', async (req, res) => {
     }
 });
 
+
+// Endpoint untuk TikTok Downloader
+app.get('/tiktok', async (req, res) => {
+    const url = req.query.url;
+
+    if (!url || url.trim() === "") {
+        return res.status(400).json({
+            creator: "TANIA X WANZOFC",
+            result: false,
+            message: "Tolong tambahkan parameter 'url'.",
+            data: null
+        });
+    }
+
+    try {
+        const apiUrl = `https://api.siputzx.my.id/api/tiktok?url=${encodeURIComponent(url)}`;
+        const apiResponse = await axios.get(apiUrl);
+        const tiktokData = apiResponse.data || {};
+         res.json({
+            creator: "WANZOFC X TANIA",
+            result: true,
+            message: "berikut adalah data tiktok anda",
+            data: tiktokData
+         });
+    } catch (error) {
+        console.error("Error TikTok Downloader:", error.message);
+        res.status(500).json({
+            creator: "WANZOFC X TANIA",
+            result: false,
+            message: "Maaf, TikTok downloader sedang bermasalah. Coba lagi nanti.",
+            data: null
+        });
+    }
+});
+
+// Endpoint untuk Instagram Downloader
+app.get('/igdl', async (req, res) => {
+  const url = req.query.url;
+
+  if (!url || url.trim() === "") {
+    return res.status(400).json({
+      creator: "TANIA X WANZOFC",
+      result: false,
+      message: "Tolong tambahkan parameter 'url'.",
+      data: null,
+    });
+  }
+
+  try {
+    const apiUrl = `https://api.siputzx.my.id/api/d/igdl?url=${encodeURIComponent(
+      url
+    )}`;
+    const apiResponse = await axios.get(apiUrl);
+    const igData = apiResponse.data || {};
+    res.json({
+      creator: "WANZOFC X TANIA",
+      result: true,
+      message: "berikut adalah data instagram anda",
+      data: igData,
+    });
+  } catch (error) {
+    console.error("Error Instagram Downloader:", error.message);
+    res.status(500).json({
+      creator: "WANZOFC X TANIA",
+      result: false,
+      message: "Maaf, Instagram downloader sedang bermasalah. Coba lagi nanti.",
+      data: null,
+    });
+  }
+});
+
+
+// Endpoint untuk Search TikTok
+app.get('/s/tiktok', async (req, res) => {
+    const query = req.query.query;
+
+    if (!query || query.trim() === "") {
+        return res.status(400).json({
+            creator: "TANIA X WANZOFC",
+            result: false,
+            message: "Tolong tambahkan parameter 'query'.",
+            data: null
+        });
+    }
+
+    try {
+        const apiUrl = `https://api.siputzx.my.id/api/s/tiktok?query=${encodeURIComponent(query)}`;
+        const apiResponse = await axios.get(apiUrl);
+          const searchData = apiResponse.data || {};
+        res.json({
+             creator: "WANZOFC X TANIA",
+            result: true,
+            message: "berikut adalah data pencarian tiktok anda",
+            data: searchData
+        });
+    } catch (error) {
+        console.error("Error Search TikTok:", error.message);
+        res.status(500).json({
+            creator: "WANZOFC X TANIA",
+            result: false,
+            message: "Maaf, pencarian tiktok sedang bermasalah. Coba lagi nanti.",
+           data: null
+        });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Server berjalan di http://localhost:${PORT}`);
 });
