@@ -980,6 +980,24 @@
                       generateVCC(type, count);
                 }
             });
+         $('#tiktok-download').on('click', function () {
+             const url = $('#tiktok-url').val();
+             if (url.trim() === "") {
+                 $('#tiktok-response').html(`<p class="api-error-message">Tolong masukan URL tiktok</p>`);
+                 $('#tiktok-result').show();
+             } else {
+                 tiktokDownloader(url);
+             }
+         });
+        $('#search-tiktok').on('click', function () {
+            const query = $('#search-tiktok-query').val();
+            if (query.trim() === "") {
+               $('#searchTiktok-response').html(`<p class="api-error-message">Tolong masukan keyword pencarian</p>`);
+               $('#searchTiktok-result').show();
+            } else {
+                 searchTiktok(query);
+            }
+         });
             toggleTargetInput();
             loadStoredSubdomains();
             $("#checkIpButton").click(function() {
