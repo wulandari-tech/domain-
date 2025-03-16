@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanzofc Mail - Admin</title>
+   <style>
+        body {
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          background-color: #f4f4f4;
+          color: #333;
+          margin: 0;
+          padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #4CAF50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em; /* Lebih besar */
+
+        }
+        #customEmailForm {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="password"]{
+          width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover{
+          background-color: #388e3c;
+        }
+        #message {
+          margin-top: 10px;
+          font-weight: bold;
+          text-align: center; /* Center the text */
+
+        }
+
+        #emailList {
+          margin-top: 20px;
+          border: 1px solid #ddd;
+          padding: 15px;
+          border-radius: 8px;
+        }
+        #emailList h2{
+          margin-bottom: 15px;
+        }
+
+        .emailItem {
+          padding: 8px;
+          border-bottom: 1px solid #eee;
+          word-break: break-all;
+        }
+        .emailItem:last-child {
+          border-bottom: none;
+        }
+
+        /* CSS untuk chat di admin */
+        #chatContainer {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 20px;
+            height: 300px;
+            overflow-y: auto;
+            border-radius: 5px;
+        }
+        #chatMessages {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+       .chatMessage {
+            margin-bottom: 8px; /* Lebih rapi */
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .userMessage {
+            text-align: right;
+            background-color: #d4edda; /* Green */
+            color: #155724;
+            align-self: flex-end; /* Rata kanan */
+        }
+        .adminMessage {
+            text-align: left;
+            background-color: #cce5ff; /* Blue */
+            color: #004085;
+            align-self: flex-start; /* Rata kiri */
+        }
+
+        #chatInputSection {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        #chatInput {
+            flex-grow: 1; /* Lebar fleksibel */
+            padding: 8px;
+             border: 1px solid #ccc;
+            border-radius: 4px 0 0 4px;
+        }
+        #sendButton {
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 0 4px 4px 0;
+            transition: background-color 0.3s;
+        }
+        #sendButton:hover {
+            background-color: #388e3c;
+        }
+
+        .hidden {
+          display: none;
+        }
+
+        #loginSection{
+          margin-bottom: 20px;
+          padding: 20px;
+          border: 1px solid #ddd;
+          border-radius: 5px;
+          background-color: #f9f9f9;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+      <h1>Wanzofc Mail - Admin</h1>
+
+       <div id="loginSection">
+          <h2>Admin Login</h2>
+          <label for="adminPassword">Password:</label>
+          <input type="password" id="adminPassword" name="adminPassword">
+          <button id="loginButton">Login</button>
+          <div id="loginMessage"></div>
+        </div>
+
+        <div id="customEmailForm" class="hidden">
+            <h2>Buat Email Custom</h2>
+            <label for="customUsername">Nama Pengguna:</label>
+            <input type="text" id="customUsername" name="customUsername">
+
+            <label for="customPassword">Password:</label>
+            <input type="password" id="customPassword" name="customPassword">
+
+            <label for="targetUser">Untuk Pengguna (Temp Email):</label>
+            <input type="text" id="targetUser" name="targetUser">
+
+
+            <button id="createCustomEmail">Buat</button>
+            <div id="message"></div>
+        </div>
+
+        <div id="emailList" class="hidden">
+            <h2>Email Custom</h2>
+             <div id="listnya"></div>
+        </div>
+
+      <div id="chatContainer" class="hidden">
+        <h2>Chat</h2>
+        <p>Chat dengan: <span id="currentChatUser"></span></p>
+        <ul id="chatMessages"></ul>
+         <div id="chatInputSection">
+            <input type="text" id="chatInput" placeholder="Ketik pesan...">
+            <button id="sendButton">Kirim</button>
+        </div>
+    </div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79v8a265Nfe5f4kSQ+K6hYfSCj/vhqR6yv+SGOK4+jRro9iGSxFo+uubqlo+b" crossorigin="anonymous"></script>
+    <script>
+
+      const customEmailForm = document.getElementById('customEmailForm');
+      const customUsernameInput = document.getElementById('customUsername');
+      const customPasswordInput = document.getElementById('customPassword');
+      const targetUserInput = document.getElementById('targetUser');
+      const createCustomEmailButton = document.getElementById('createCustomEmail');
+      const messageDiv = document.getElementById('message');
+      const emailListDiv = document.getElementById('listnya');
+
+      //Chat
+      const chatContainer = document.getElementById('chatContainer');
+      const chatMessagesList = document.getElementById('chatMessages');
+      const chatInput = document.getElementById('chatInput');
+      const sendButton = document.getElementById('sendButton');
+      const currentChatUserSpan = document.getElementById('currentChatUser');
+
+       // Login
+      const loginSection = document.getElementById('loginSection');
+      const adminPasswordInput = document.getElementById('adminPassword');
+      const loginButton = document.getElementById('loginButton');
+      const loginMessageDiv = document.getElementById('loginMessage');
+
+      let currentChatUser = null;
+      let currentChatId = null;
+      let adminLoggedIn = false;
+
+      const socket = io(); // Inisialisasi Socket.IO client
+
+      //Admin login
+        loginButton.addEventListener('click', () => {
+          const password = adminPasswordInput.value;
+          socket.emit('admin-login', password);
+      });
+
+      socket.on('admin-login-success', () => {
+          adminLoggedIn = true;
+          loginSection.classList.add('hidden');
+          customEmailForm.classList.remove('hidden');
+          emailList.classList.remove('hidden');
+          chatContainer.classList.remove('hidden');
+          fetchCustomEmails();
+           messageDiv.textContent = ''; // Hapus pesan login
+
+        });
+
+        socket.on('admin-login-failure', () => {
+            loginMessageDiv.textContent = 'Login gagal. Password salah.';
+            loginMessageDiv.style.color = 'red';
+
+        });
+
+      socket.on('connect', () => {
+          console.log('Connected to server (admin)');
+        });
+
+
+      socket.on('new-chat', ({ chatId, userEmail }) => {
+        // Admin di beritahu ada chat baru
+        currentChatId = chatId;
+        currentChatUser = userEmail;
+        currentChatUserSpan.textContent = userEmail;
+        chatMessagesList.innerHTML = ''; // Kosongkan pesan
+        chatContainer.classList.remove('hidden'); // Tampilkan chat
+      });
+
+      socket.on('chat-message', ({ chatId: serverChatId, message }) => {
+            if (serverChatId !== currentChatId) {
+                return; // Abaikan pesan dari chat yang tidak aktif
+            }
+            const messageItem = document.createElement('li');
+            messageItem.classList.add('chatMessage');
+            messageItem.classList.add(message.sender === 'admin' ? 'adminMessage' : 'userMessage');
+            messageItem.textContent = `${message.sender}: ${message.text}`;
+            chatMessagesList.appendChild(messageItem);
+             chatContainer.scrollTop = chatContainer.scrollHeight;
+        });
+
+      sendButton.addEventListener('click', () => {
+        const text = chatInput.value.trim();
+        if (text && currentChatId) {
+          socket.emit('chat-message', { chatId: currentChatId, text });
+          chatInput.value = '';
+        }
+      });
+
+      async function createCustomEmail(username, password, targetUser) {
+        try {
+          const response = await fetch('/create-custom-email', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password, targetUser }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            messageDiv.textContent = `Email custom ${data.email} berhasil dibuat!`;
+            messageDiv.style.color = 'green';
+            customEmailForm.reset();
+            fetchCustomEmails(); // Perbarui daftar email
+          } else {
+            messageDiv.textContent = data.message || 'Gagal membuat email custom.';
+            messageDiv.style.color = 'red';
+          }
+
+        } catch (error) {
+          console.error('Error:', error);
+          messageDiv.textContent = 'Terjadi kesalahan saat membuat email custom.';
+          messageDiv.style.color = 'red';
+        }
+      }
+
+      async function fetchCustomEmails() {
+        try{
+          const response = await fetch('/custom-emails');
+          const data = await response.json();
+
+          if(response.ok){
+            emailListDiv.innerHTML = ''; // Bersihkan
+            if (data.length === 0) {
+              emailListDiv.innerHTML = '<p>Belum ada email custom.</p>';
+              return;
+              }
+
+            data.forEach(email => {
+              const emailItem = document.createElement('div');
+              emailItem.classList.add('emailItem');
+              emailItem.textContent = email;
+              emailListDiv.appendChild(emailItem);
+            })
+          } else {
+             messageDiv.textContent = data.message || 'Gagal mengambil daftar email kustom.';
+            messageDiv.style.color = 'red';
+          }
+
+        } catch(error){
+          console.error("Error: ", error);
+          messageDiv.textContent = 'Terjadi kesalahan saat mengambil daftar email.';
+           messageDiv.style.color = 'red';
+        }
+      }
+
+
+
+      createCustomEmailButton.addEventListener('click', async () => {
+        const username = customUsernameInput.value;
+        const password = customPasswordInput.value;
+        const targetUserEmail = targetUserInput.value;
+
+
+        if (!username || !password || !targetUserEmail) {
+          messageDiv.textContent = 'Semua kolom harus diisi.';
+          messageDiv.style.color = 'red';
+          return;
+        }
+
+        //Validasi target user email, harus temp email.
+        if(!targetUserEmail.endsWith('@' + 'wanzofc.us.kg')){
+          messageDiv.textContent = 'Target User harus merupakan temp email.';
+          messageDiv.style.color = 'red';
+          return;
+        }
+
+        await createCustomEmail(username, password, targetUserEmail);
+      });
+
+       //Jangan ambil daftar diawal, karena admin belum tentu login.
+      // fetchCustomEmails();
+
+    </script>
+</body>
+</html>
