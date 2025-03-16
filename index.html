@@ -5,14 +5,129 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wanzofc Mail</title>
     <style>
-        /* ... (CSS dari contoh sebelumnya) ... */
-        /* CSS tambahan untuk chat */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #4CAF50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em; /* Lebih besar */
+        }
+        #emailSection {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f0f8ff;
+            border: 1px solid #add8e6;
+            border-radius: 5px;
+        }
+        #emailAddress {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-right: 10px;
+            word-break: break-all;
+        }
+        #copyButton {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #copyButton:hover {
+          background-color: #388e3c;
+        }
+
+        #timer {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        #emailList {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .emailItem {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .emailItem:last-child {
+            border-bottom: none;
+        }
+        .emailItem strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        .emailItem p {
+            margin: 0;
+            color: #666;
+            line-height: 1.4;
+            word-break: break-word;
+        }
+        .hidden {
+            display: none;
+        }
+        #refreshButton {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: auto;
+            margin-bottom: 10px;
+             transition: background-color 0.3s;
+        }
+
+        #refreshButton:hover {
+          background-color: #0b7dda;
+        }
+
+        #customEmailSection {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f8ff;
+            border: 1px solid #add8e6;
+            border-radius: 5px;
+            text-align: center;
+        }
+        #customEmailSection p {
+            margin-bottom: 10px;
+        }
+
+        /* CSS untuk chat */
         #chatContainer {
             border: 1px solid #ddd;
             padding: 10px;
             margin-top: 20px;
             height: 200px;
             overflow-y: auto;
+             border-radius: 5px;
+
         }
         #chatMessages {
             list-style: none;
@@ -20,20 +135,32 @@
             margin: 0;
         }
         .chatMessage {
-            margin-bottom: 5px;
+            margin-bottom: 8px; /* Lebih rapi */
+            padding: 5px;
+            border-radius: 5px;
         }
         .userMessage {
             text-align: right;
-            color: blue;
+            background-color: #d4edda; /* Green */
+            color: #155724;
+            align-self: flex-end; /* Rata kanan */
         }
         .adminMessage {
             text-align: left;
-            color: green;
+            background-color: #cce5ff; /* Blue */
+            color: #004085;
+            align-self: flex-start; /* Rata kiri */
         }
-        #chatInput {
-            width: 70%;
-            padding: 8px;
+        #chatInputSection {
+            display: flex;
             margin-top: 10px;
+        }
+
+        #chatInput {
+            flex-grow: 1; /* Lebar fleksibel */
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px 0 0 4px; /* Rounded corners on the left */
         }
         #sendButton {
             padding: 8px 12px;
@@ -41,6 +168,12 @@
             color: white;
             border: none;
             cursor: pointer;
+            border-radius: 0 4px 4px 0; /* Rounded corners on the right */
+             transition: background-color 0.3s;
+        }
+
+        #sendButton:hover{
+          background-color: #388e3c;
         }
          #customEmailNotification {
             position: fixed; /* Fixed position */
@@ -72,11 +205,16 @@
             background-color: #f8d7da; /* Red */
             color: #721c24;
         }
+         #message {
+          text-align: center;
+          margin-top: 15px;
+          font-weight: bold;
+        }
 
     </style>
 </head>
 <body>
-  <div class="container">
+    <div class="container">
         <h1>Wanzofc Mail</h1>
 
         <div id="adminStatus" class="admin-offline">Admin Offline</div>
@@ -99,13 +237,14 @@
         </div>
         <div id="message"></div>
 
-
-        <!-- Chat (Integrasi dengan Socket.IO) -->
+        <!-- Chat -->
       <div id="chatContainer" class="hidden">
           <h2>Chat</h2>
           <ul id="chatMessages"></ul>
-          <input type="text" id="chatInput" placeholder="Ketik pesan...">
-          <button id="sendButton">Kirim</button>
+          <div id="chatInputSection">
+            <input type="text" id="chatInput" placeholder="Ketik pesan...">
+            <button id="sendButton">Kirim</button>
+          </div>
       </div>
 
         <div id="customEmailNotification">Email custom telah dibuat!</div>
@@ -113,7 +252,6 @@
     </div>
 
     <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79v8a265Nfe5f4kSQ+K6hYfSCj/vhqR6yv+SGOK4+jRro9iGSxFo+uubqlo+b" crossorigin="anonymous"></script>
-
     <script>
        const emailAddressDiv = document.getElementById('emailAddress');
         const copyButton = document.getElementById('copyButton');
@@ -140,7 +278,6 @@
         let chatId = null;
 
         const socket = io(); // Inisialisasi Socket.IO client
-
 
         //Event listener untuk perubahan status admin.
         socket.on('admin-status-change', ({online}) => {
@@ -194,9 +331,8 @@
           messageDiv.style.color = 'red';
         });
 
-
         async function createNewEmail() {
-           try {
+            try {
                 const response = await fetch('/create-email');
                 const data = await response.json();
 
@@ -231,7 +367,7 @@
                 }
             } catch (error) {
                 console.error('Error:', error);
-                 messageDiv.textContent = 'Terjadi kesalahan.';
+                messageDiv.textContent = 'Terjadi kesalahan.';
                 messageDiv.style.color = 'red';
             }
         }
@@ -260,14 +396,14 @@
                         emailsDiv.appendChild(emailItem);
                     });
                 } else {
-                  messageDiv.textContent = data.message || "Gagal mengambil email";
-                  messageDiv.style.color = "red";
+                    messageDiv.textContent = data.message || "Gagal mengambil email";
+                    messageDiv.style.color = "red";
                 }
 
             } catch (error) {
-              console.error("Error fetching emails", error);
-               messageDiv.textContent = "Terjadi kesalahan saat mengambil email.";
-              messageDiv.style.color = "red";
+                console.error("Error fetching emails", error);
+                messageDiv.textContent = "Terjadi kesalahan saat mengambil email.";
+                messageDiv.style.color = "red";
             }
         }
 
@@ -289,19 +425,18 @@
             timerDiv.textContent = `Email ini akan hangus dalam: ${hours}j ${minutes}m ${seconds}d`;
         }
 
-
         copyButton.addEventListener('click', () => {
             navigator.clipboard.writeText(currentEmailAddress)
-            .then(() => {
-                messageDiv.textContent = "Email berhasil disalin!";
-                messageDiv.style.color = 'green';
-                setTimeout(() => { messageDiv.textContent = ''; }, 3000);
-            })
-            .catch(err => {
-                messageDiv.textContent = 'Gagal menyalin email.';
-                messageDiv.style.color = 'red';
-                console.error('Gagal menyalin: ', err);
-            });
+                .then(() => {
+                    messageDiv.textContent = "Email berhasil disalin!";
+                    messageDiv.style.color = 'green';
+                    setTimeout(() => { messageDiv.textContent = ''; }, 3000);
+                })
+                .catch(err => {
+                    messageDiv.textContent = 'Gagal menyalin email.';
+                    messageDiv.style.color = 'red';
+                    console.error('Gagal menyalin: ', err);
+                });
         });
 
         refreshButton.addEventListener('click', fetchEmails);
