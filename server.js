@@ -1,389 +1,135 @@
-const express = require('express');
+const http = require('http');
+const fs = require('fs');
 const path = require('path');
-const axios = require('axios');
-const app = express();
-const PORT = process.env.PORT || 3000;
+const url = require('url');
 
-const cloudflare = [
-    {
-        name: "domain1",
-        zone: "8986c21d4df43f0d1708b8f9f6ab4dcd",
-        api: "FUKXUphvvUDKUQW8v8JIWXBQekynFNOV1ltmT4eE",
-        tld: "wanzofc.us.kg"
-    },
-    {
-       name: "domain2",
-       zone: "919ace9dbff7b1dd9aa5dcbb64decf88",
-       api: "PsjHd9TnTQRDEG9HY9t9QBDCdJIAvEeSYV-bIDdA",
-       tld: "awan-attack.my.id"
-    },
-    {
-       name: "domain3",
-       zone: "59a8c57e050d9fe494a0185d22b3ce8f",
-       api: "3V4JjD7Q8Up4ks-wxVux27fZa2d4_w30gz8gkQ2c",
-       tld: "awanbrayy.web.id"
-   },
-    {
-       name: "domain4",
-       zone: "6828ba3637863e29913b862d3b2864ed",
-        api: "aodh20-nYjvNtK0LcroxLBYj9j6Brv4WHM8WRQHQ",
-       tld: "behind-the-scenes.xyz"
-    },
-    {
-        name: "domain5",
-        zone: "f48125e204c58478e901b44591a8aaa1",
-        api: "XiCX9FdqvuzTfrzohsIWKXs_grVujKdjyRaPdyB2",
-        tld: "wanzofc.xyz"
-    },
-    {
-        name: "domain6",
-       zone: "4a077141990a60819c8a7e3ad006104c",
-        api: "bAJeTExSyN5EZPxRkLgLGMRwdzpijxugZBS3WCXz",
-       tld: "alfiansyah.xyz"
-    },
-];
+const hostname = '127.0.0.1';
+const port = 3000;
+const tld = 'wanzofc.us.kg'; // Ganti dengan TLD Anda
+const apiToken = 'jsC-4c5SlT1GKESV7qzVf4sSYYgV9g-HrQvaNoHg'; // API Token
+const zoneId = '8986c21d4df43f0d1708b8f9f6ab4dcd';     // Zone ID
 
-app.use(express.json());
 
-async function createDnsRecord(type, name, content, proxied, domainName) {
-    const recordType = type.toUpperCase();
-    if (!['A', 'CNAME'].includes(recordType)) {
-        throw new Error("Tipe DNS record tidak valid. Harus 'A' atau 'CNAME'.");
-    }
-    const selectedDomain = cloudflare.find(domain => domain.name === domainName);
-    if (!selectedDomain) {
-        throw new Error(`Domain dengan nama ${domainName} tidak ditemukan`);
-    }
-    const recordName = `${name.replace(/[^a-z0-9.-]/gi, "")}.${selectedDomain.tld}`;
-    try {
-        const response = await axios.post(
-            `https://api.cloudflare.com/client/v4/zones/${selectedDomain.zone}/dns_records`,
-            {
-                type: recordType,
-                name: recordName,
-                content: content,
-                ttl: 3600,
-                proxied: proxied === 'true',
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${selectedDomain.api}`,
-                    "Content-Type": "application/json",
-                },
-            }
-        );
-        if (response.data.success) {
-            const result = response.data.result;
-            return {
-                success: true,
-                zone: result.zone_name,
-                name: result.name,
-                type: result.type,
-                content: result.content,
-                proxied: result.proxied,
-            };
-        } else {
-            let error = response.data?.errors?.[0]?.message || response.data?.errors || "Unknown Cloudflare API error";
-            throw new Error(error);
-        }
-    } catch (error) {
-         let errorMessage = error.response?.data?.errors?.[0]?.message || error.response?.data?.errors || error.message || error.response?.data || error.response || error;
-       throw new Error(`Cloudflare API error: ${String(errorMessage)}`);
-    }
+// "Database" dalam memori (semua data di sini)
+const emails = {};
+const emailAuth = {}; // email -> {apiKey, apiToken, zoneId, expiresAt}
+
+
+function generateRandomString(length) {
+  let result = '';
+  const characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
 }
 
-app.post('/create-a-record', async (req, res) => {
-    const { host, ip, domainName, proxied } = req.body;
 
-    if (!host || !ip || !domainName) {
-        return res.status(400).json({ success: false, error: "Host, IP, dan Domain wajib diisi." });
-    }
+const server = http.createServer((req, res) => {
+    const reqUrl = url.parse(req.url, true);
 
-    try {
-        const result = await createDnsRecord('A', host, ip, proxied, domainName);
-        res.json({ success: true, message: 'A record berhasil dibuat', data: result });
-    } catch (error) {
-        console.error("Error saat membuat A record:", error);
-        res.status(500).json({ success: false, error: error.message });
-    }
-});
-
-app.post('/create-cname-record', async (req, res) => {
-    const { host, target, domainName, proxied } = req.body;
-
-    if (!host || !target || !domainName) {
-        return res.status(400).json({ success: false, error: "Host, Target, dan Domain wajib diisi." });
-    }
-
-    try {
-        const result = await createDnsRecord('CNAME', host, target, proxied, domainName);
-        res.json({ success: true, message: 'CNAME record berhasil dibuat', data: result });
-    } catch (error) {
-        console.error("Error saat membuat CNAME record:", error);
-        res.status(500).json({ success: false, error: error.message });
-    }
-});
-
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-
-// Endpoint API Dukun
-app.get('/dukun', async (req, res) => {
-    const text = req.query.content;
-
-    if (!text || text.trim() === "") {
-        return res.status(400).json({
-            creator: "TANIA X WANZOFC",
-            result: false,
-            message: "Tolong tambahkan pertanyaan setelah parameter 'content'.",
-            data: null
+    if (reqUrl.pathname === '/' && req.method === 'GET') {
+        // Tampilkan index.html
+        fs.readFile(path.join(__dirname, 'index.html'), (err, data) => {
+            if (err) {
+                res.writeHead(500, { 'Content-Type': 'text/plain' });
+                res.end('Internal Server Error');
+                return;
+            }
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(data);
         });
-    }
 
-    try {
-        const apiUrl = `https://api.siputzx.my.id/api/ai/dukun?content=${encodeURIComponent(text)}`;
-        const apiResponse = await axios.get(apiUrl);
-        const botResponse = apiResponse.data?.data || "Maaf, saya tidak bisa menjawab saat ini.";
-         res.json({
-             creator: "WANZOFC X TANIA",
-             result: true,
-             message: "sebut nama kamu",
-             data: botResponse
-         });
-    } catch (error) {
-        console.error("Error wanz:", error.message);
-        res.status(500).json({
-            creator: "WANZOFC X TANIA",
-            result: false,
-            message: "Maaf, dukun sedang bermeditasi. Coba lagi nanti.",
-            data: null
-        });
-    }
-});
+    } else if (reqUrl.pathname === '/create-email' && req.method === 'GET') {
+      // Buat alamat email acak
+      const randomPrefix = generateRandomString(8);
+      const emailAddress = `${randomPrefix}@${tld}`;
 
-// Endpoint untuk Meta AI (kontol)
-app.get('/metaai', async (req, res) => {
-    const query = req.query.query;
+      // Hitung waktu kedaluwarsa (24 jam dari sekarang)
+      const expiresAt = Date.now() + (24 * 60 * 60 * 1000);
 
-     if (!query || query.trim() === "") {
-        return res.status(400).json({
-            creator: "TANIA X WANZOFC",
-            result: false,
-            message: "Tolong tambahkan pertanyaan setelah parameter 'query'.",
-            data: null
-        });
-    }
-    try {
-        const apiUrl = `https://api.siputzx.my.id/api/ai/metaai?query=${encodeURIComponent(query)}`;
-        const apiResponse = await axios.get(apiUrl);
-        const botResponse = apiResponse.data?.result || "Maaf, saya tidak bisa menjawab saat ini.";
-        res.json({
-            creator: "WANZOFC X TANIA",
-            result: true,
-            message: "metaai",
-            data: botResponse
-        });
-    } catch (error) {
-        console.error("Error metaai:", error.message);
-       res.status(500).json({
-           creator: "WANZOFC X TANIA",
-            result: false,
-            message: "Maaf, Meta AI sedang bermasalah. Coba lagi nanti.",
-            data: null
-        });
-    }
-});
-
-// Endpoint untuk VCC Generator
-app.get('/vcc-generator', async (req, res) => {
-    const type = req.query.type;
-    const count = req.query.count;
-
-     if (!type || !count || type.trim() === "" || count.trim() === "") {
-        return res.status(400).json({
-            creator: "TANIA X WANZOFC",
-            result: false,
-            message: "Tolong tambahkan parameter 'type' dan 'count'.",
-            data: null
-        });
-    }
-
-    try {
-        const apiUrl = `https://api.siputzx.my.id/api/tools/vcc-generator?type=${encodeURIComponent(type)}&count=${encodeURIComponent(count)}`;
-         const apiResponse = await axios.get(apiUrl);
-        const vccData = apiResponse.data?.data || [];
-        res.json({
-            creator: "WANZOFC X TANIA",
-            result: true,
-            message: "berikut adalah data vcc anda",
-           data: vccData
-        });
-    } catch (error) {
-        console.error("Error VCC Generator:", error.message);
-         res.status(500).json({
-            creator: "WANZOFC X TANIA",
-            result: false,
-            message: "Maaf, VCC generator sedang bermasalah. Coba lagi nanti.",
-           data: null
-        });
-    }
-});
+      //Simpan API token, zone ID, dan waktu kedaluwarsa.
+      emailAuth[emailAddress] = { apiToken, zoneId, expiresAt };
 
 
-// Endpoint untuk TikTok Downloader
-app.get('/tiktok', async (req, res) => {
-    const url = req.query.url;
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ email: emailAddress, expiresAt }));
 
-    if (!url || url.trim() === "") {
-        return res.status(400).json({
-            creator: "TANIA X WANZOFC",
-            result: false,
-            message: "Tolong tambahkan parameter 'url'.",
-            data: null
-        });
-    }
+    } else if (reqUrl.pathname === '/emails' && req.method === 'GET') {
+        // Ambil email untuk alamat
+        const address = reqUrl.query.address;
 
-    try {
-        const apiUrl = `https://api.siputzx.my.id/api/tiktok?url=${encodeURIComponent(url)}`;
-        const apiResponse = await axios.get(apiUrl);
-        const tiktokData = apiResponse.data || {};
-         res.json({
-            creator: "WANZOFC X TANIA",
-            result: true,
-            message: "berikut adalah data tiktok anda",
-            data: tiktokData
-         });
-    } catch (error) {
-        console.error("Error TikTok Downloader:", error.message);
-        res.status(500).json({
-            creator: "WANZOFC X TANIA",
-            result: false,
-            message: "Maaf, TikTok downloader sedang bermasalah. Coba lagi nanti.",
-            data: null
-        });
-    }
-});
-
-// Endpoint untuk Instagram Downloader
-app.get('/igdl', async (req, res) => {
-  const url = req.query.url;
-
-  if (!url || url.trim() === "") {
-    return res.status(400).json({
-      creator: "TANIA X WANZOFC",
-      result: false,
-      message: "Tolong tambahkan parameter 'url'.",
-      data: null,
-    });
-  }
-
-  try {
-    const apiUrl = `https://api.siputzx.my.id/api/d/igdl?url=${encodeURIComponent(
-      url
-    )}`;
-    const apiResponse = await axios.get(apiUrl);
-    const igData = apiResponse.data || {};
-    res.json({
-      creator: "WANZOFC X TANIA",
-      result: true,
-      message: "berikut adalah data instagram anda",
-      data: igData,
-    });
-  } catch (error) {
-    console.error("Error Instagram Downloader:", error.message);
-    res.status(500).json({
-      creator: "WANZOFC X TANIA",
-      result: false,
-      message: "Maaf, Instagram downloader sedang bermasalah. Coba lagi nanti.",
-      data: null,
-    });
-  }
-});
-
-
-// Endpoint untuk Search TikTok
-app.get('/s/tiktok', async (req, res) => {
-    const query = req.query.query;
-
-    if (!query || query.trim() === "") {
-        return res.status(400).json({
-            creator: "TANIA X WANZOFC",
-            result: false,
-            message: "Tolong tambahkan parameter 'query'.",
-            data: null
-        });
-    }
-
-    try {
-        const apiUrl = `https://api.siputzx.my.id/api/s/tiktok?query=${encodeURIComponent(query)}`;
-        const apiResponse = await axios.get(apiUrl);
-          const searchData = apiResponse.data || {};
-        res.json({
-             creator: "WANZOFC X TANIA",
-            result: true,
-            message: "berikut adalah data pencarian tiktok anda",
-            data: searchData
-        });
-    } catch (error) {
-        console.error("Error Search TikTok:", error.message);
-        res.status(500).json({
-            creator: "WANZOFC X TANIA",
-            result: false,
-            message: "Maaf, pencarian tiktok sedang bermasalah. Coba lagi nanti.",
-           data: null
-        });
-    }
-});
-
-// Endpoint untuk Subdomain Finder
-app.get('/subdomains', async (req, res) => {
-    const domain = req.query.domain;
-
-    if (!domain || domain.trim() === "") {
-        return res.status(400).json({
-            creator: "TANIA X WANZOFC",
-            result: false,
-            message: "Tolong tambahkan parameter 'domain'.",
-            data: null
-        });
-    }
-
-    try {
-        const apiUrl = `https://api.siputzx.my.id/api/tools/subdomains?domain=${encodeURIComponent(domain)}`;
-        const apiResponse = await axios.get(apiUrl);
-        const subdomainsData = apiResponse.data || {}; // Tangani jika apiResponse.data null atau undefined
-
-        // Periksa apakah respons API berhasil sebelum mengirim data
-        if (subdomainsData.status === true || subdomainsData.success === true) { // cek kunci status atau success
-          res.json({
-            creator: "WANZOFC X TANIA",
-            result: true,
-            message: "Berikut adalah subdomain yang ditemukan:",
-            data: subdomainsData.data || subdomainsData.result || [] // Gunakan data atau result, tergantung dari API
-          });
-
-        } else {
-          // Tangani jika API mengembalikan status false atau error
-          res.status(500).json({
-            creator: "WANZOFC X TANIA",
-            result: false,
-            message: subdomainsData.message || "Gagal mengambil data subdomain.", // Menampilkan pesan error dari API jika ada
-            data: null
-          });
+        if (!address) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'Alamat email diperlukan.' }));
+            return;
         }
-    } catch (error) {
-        console.error("Error Subdomain Finder:", error.message);
-        res.status(500).json({
-            creator: "WANZOFC X TANIA",
-            result: false,
-            message: "Maaf, terjadi kesalahan saat mencari subdomain. Coba lagi nanti.",
-            data: null
+
+        const emailList = emails[address] || [];
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(emailList));
+
+    } else if (reqUrl.pathname === '/receive' && req.method === 'POST') {
+      //Simulasi menerima email.
+      let body = '';
+        req.on('data', chunk => {
+            body += chunk.toString();
         });
+
+        req.on('end', () => {
+            try {
+                const { to, from, subject, body: emailBody } = JSON.parse(body);
+
+                if (!to || !from || !subject || !emailBody) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ message: 'Data email tidak lengkap.' }));
+                    return;
+                }
+                //Periksa apakah alamat tujuan ada dan belum kedaluwarsa.
+                const emailData = emailAuth[to];
+
+                if (!emailData) {
+                    res.writeHead(403, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ message: 'Alamat email tidak valid atau sudah kedaluwarsa.'}));
+                    return;
+                }
+
+                //Cek Kedaluwarsa
+                if(Date.now() > emailData.expiresAt){
+                  delete emails[to]; //Hapus email yang masuk
+                  delete emailAuth[to]; //Hapus data autentikasi
+                  res.writeHead(403, {'Content-Type': 'application/json'});
+                  res.end(JSON.stringify({message: 'Alamat email sudah kedaluwarsa.'}));
+                  return;
+                }
+
+                if (!emails[to]) {
+                    emails[to] = [];
+                }
+
+                const newEmail = {
+                    id: Date.now(),
+                    from,
+                    subject,
+                    body: emailBody,
+                };
+                emails[to].push(newEmail);
+
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: true }));
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ message: 'Invalid request data.' }));
+            }
+        });
+    }else {
+        // 404 Not Found
+        res.writeHead(404, { 'Content-Type': 'text/plain' });
+        res.end('Not Found');
     }
 });
 
-app.listen(PORT, () => {
-    console.log(`Server berjalan di http://localhost:${PORT}`);
+server.listen(port, hostname, () => {
+    console.log(`Server running at http://${hostname}:${port}/`);
 });
