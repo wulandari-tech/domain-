@@ -3,119 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Temp Mail - wanz</title>
+    <title>Wanzofc Mail</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            margin: 0;
+        /* ... (CSS dari contoh sebelumnya) ... */
+        /* CSS tambahan untuk chat */
+        #chatContainer {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 20px;
+            height: 200px;
+            overflow-y: auto;
+        }
+        #chatMessages {
+            list-style: none;
             padding: 0;
+            margin: 0;
         }
-        .container {
-            max-width: 800px;
-            margin: 50px auto;
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        .chatMessage {
+            margin-bottom: 5px;
         }
-        h1 {
-            color: #4CAF50;
-            text-align: center;
-            margin-bottom: 30px;
+        .userMessage {
+            text-align: right;
+            color: blue;
         }
-        #emailSection {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: #f0f8ff; /* Light blue background */
-            border: 1px solid #add8e6; /* Light blue border */
-            border-radius: 5px;
+        .adminMessage {
+            text-align: left;
+            color: green;
         }
-
-        #emailAddress {
-            font-size: 1.2em;
-            font-weight: bold;
-            margin-right: 10px;
-            word-break: break-all; /* Prevent long email from overflowing */
-
+        #chatInput {
+            width: 70%;
+            padding: 8px;
+            margin-top: 10px;
         }
-        #copyButton {
+        #sendButton {
+            padding: 8px 12px;
             background-color: #4CAF50;
             color: white;
             border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
         }
-        #copyButton:hover {
-            background-color: #367c39;
-        }
-        #timer {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 1.1em;
-        }
-        #emailList {
-            border: 1px solid #ddd;
-            padding: 20px;
+         #customEmailNotification {
+            position: fixed; /* Fixed position */
+            bottom: 20px;    /* 20px from the bottom */
+            right: 20px;   /* 20px from the right */
+            background-color: #4CAF50; /* Green background */
+            color: white;
+            padding: 15px 20px;
             border-radius: 5px;
-             max-height: 400px; /* Set a maximum height */
-            overflow-y: auto;   /* Enable vertical scrolling */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: none; /* Initially hidden */
+            z-index: 1000; /* Ensure it's on top */
         }
-        .emailItem {
-            margin-bottom: 15px;
-            padding: 10px;
-            border-bottom: 1px solid #eee;
+        #adminStatus {
+          position: fixed;
+          top: 10px;
+          right: 10px;
+          padding: 5px 10px;
+          border-radius: 3px;
+          font-size: 0.9em;
+        }
 
-        }
-        .emailItem:last-child {
-            border-bottom: none; /* Remove border from the last item */
+        .admin-online {
+            background-color: #d4edda; /* Green */
+            color: #155724;
         }
 
-        .emailItem strong {
-            display: block;
-            margin-bottom: 5px;
-            color: #555;
+        .admin-offline {
+            background-color: #f8d7da; /* Red */
+            color: #721c24;
         }
-        .emailItem p {
-            margin: 0;
-            color: #666;
-            line-height: 1.4;
-            word-break: break-word;
-        }
-        .hidden {
-            display: none;
-        }
-        #message {
-          text-align: center;
-          margin-top: 15px;
-          font-weight: bold;
-        }
+
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Temp Mail Keren</h1>
+  <div class="container">
+        <h1>Wanzofc Mail</h1>
+
+        <div id="adminStatus" class="admin-offline">Admin Offline</div>
 
         <div id="emailSection">
             <div id="emailAddress"></div>
-            <button id="copyButton" class="hidden">Salin Email</button>
+            <button id="copyButton" class="hidden">Salin</button>
         </div>
 
         <div id="timer"></div>
 
-        <div id="emailList" class="hidden">
-            <h2>Inbox</h2>
-            <div id="emails"></div>
+        <div id="customEmailSection">
+            <p>Ingin email custom? <button id="openChatButton">Chat dengan Admin</button></p>
         </div>
 
+        <div id="emailList" class="hidden">
+            <h2>Inbox</h2>
+            <button id="refreshButton">Refresh</button>
+            <div id="emails"></div>
+        </div>
         <div id="message"></div>
+
+
+        <!-- Chat (Integrasi dengan Socket.IO) -->
+      <div id="chatContainer" class="hidden">
+          <h2>Chat</h2>
+          <ul id="chatMessages"></ul>
+          <input type="text" id="chatInput" placeholder="Ketik pesan...">
+          <button id="sendButton">Kirim</button>
+      </div>
+
+        <div id="customEmailNotification">Email custom telah dibuat!</div>
+
     </div>
+
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79v8a265Nfe5f4kSQ+K6hYfSCj/vhqR6yv+SGOK4+jRro9iGSxFo+uubqlo+b" crossorigin="anonymous"></script>
 
     <script>
        const emailAddressDiv = document.getElementById('emailAddress');
@@ -123,54 +120,120 @@
         const timerDiv = document.getElementById('timer');
         const emailsDiv = document.getElementById('emails');
         const emailListDiv = document.getElementById('emailList');
-        const emailSection = document.getElementById('emailSection');
         const messageDiv = document.getElementById('message');
+        const refreshButton = document.getElementById('refreshButton');
+        const openChatButton = document.getElementById('openChatButton');
+
+        //Chat
+        const chatContainer = document.getElementById('chatContainer');
+        const chatMessagesList = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const sendButton = document.getElementById('sendButton');
+        const customEmailNotification = document.getElementById('customEmailNotification');
+        const adminStatusDiv = document.getElementById('adminStatus');
 
 
         let currentEmailAddress = '';
         let emailRefreshInterval;
         let timerInterval;
-        let expirationTime; // Menyimpan waktu kedaluwarsa
+        let expirationTime;
+        let chatId = null;
+
+        const socket = io(); // Inisialisasi Socket.IO client
+
+
+        //Event listener untuk perubahan status admin.
+        socket.on('admin-status-change', ({online}) => {
+          adminStatusDiv.textContent = online ? "Admin Online" : "Admin Offline";
+          adminStatusDiv.className = online ? 'admin-online' : 'admin-offline';
+        });
+
+        //Ketika email custom sudah di buat
+        socket.on('custom-email-created', ({email}) => {
+          //Tampilkan notifikasi
+          customEmailNotification.textContent = `Email custom ${email} telah dibuat untukmu!`;
+          customEmailNotification.style.display = "block";
+
+          //Sembunyikan notif setelah 5 detik
+          setTimeout(()=>{
+            customEmailNotification.style.display = 'none';
+          }, 5000);
+        });
+
+        socket.on('connect', () => {
+          console.log("Connected to server via Socket.IO", socket.id);
+          //Setelah koneksi berhasil, kirim email pengguna ke server untuk registrasi.
+            if(currentEmailAddress){
+              socket.emit('register', currentEmailAddress);
+            }
+        });
+
+
+        socket.on('chat-started', (data) => {
+          chatId = data.chatId;
+          chatContainer.classList.remove('hidden'); // Tampilkan chat
+          chatMessagesList.innerHTML = ''; // Kosongkan pesan
+        });
+
+        socket.on('chat-message', ({ chatId: serverChatId, message }) => {
+            if (serverChatId !== chatId) {
+                return; // Abaikan pesan dari chat yang tidak aktif
+            }
+            const messageItem = document.createElement('li');
+            messageItem.classList.add('chatMessage');
+            messageItem.classList.add(message.sender === 'user' ? 'userMessage' : 'adminMessage');
+            messageItem.textContent = `${message.sender}: ${message.text}`;
+            chatMessagesList.appendChild(messageItem);
+            chatContainer.scrollTop = chatContainer.scrollHeight; // Scroll ke bawah
+        });
+
+
+        //Error handling untuk chat.
+        socket.on('chat-error', ({message}) => {
+          messageDiv.textContent = message;
+          messageDiv.style.color = 'red';
+        });
 
 
         async function createNewEmail() {
-          try {
-            const response = await fetch('/create-email');
-            const data = await response.json();
+           try {
+                const response = await fetch('/create-email');
+                const data = await response.json();
 
-            if (response.ok) {
-              currentEmailAddress = data.email;
-              expirationTime = data.expiresAt; // Waktu kedaluwarsa dari server
-              emailAddressDiv.textContent = currentEmailAddress;
+                if (response.ok) {
+                    currentEmailAddress = data.email;
+                    expirationTime = data.expiresAt;
+                    emailAddressDiv.textContent = currentEmailAddress;
 
-                // Tampilkan tombol salin dan bagian email
-                copyButton.classList.remove('hidden');
-                emailListDiv.classList.remove('hidden');
-                emailSection.classList.remove('hidden');
+                    // Tampilkan tombol, inbox, dll.
+                    copyButton.classList.remove('hidden');
+                    emailListDiv.classList.remove('hidden');
+                    document.getElementById('emailSection').classList.remove('hidden');
+
+                    // Kosongkan inbox dan ambil email
+                    emailsDiv.innerHTML = '';
+                    fetchEmails();
+                    if (emailRefreshInterval) clearInterval(emailRefreshInterval);
+                    emailRefreshInterval = setInterval(fetchEmails, 5000);
+
+                    // Update timer
+                    updateTimer();
+                    if (timerInterval) clearInterval(timerInterval);
+                    timerInterval = setInterval(updateTimer, 1000);
+
+                    // Registrasi socket setelah email dibuat
+                    socket.emit('register', currentEmailAddress);
 
 
-              // Kosongkan dan mulai ambil email
-              emailsDiv.innerHTML = '';
-              fetchEmails();
-              if (emailRefreshInterval) clearInterval(emailRefreshInterval); // Hentikan yang lama
-              emailRefreshInterval = setInterval(fetchEmails, 5000);
-
-              // Update timer
-              updateTimer(); // Update langsung
-              if (timerInterval) clearInterval(timerInterval);
-              timerInterval = setInterval(updateTimer, 1000);
-
-            } else {
-              messageDiv.textContent = data.message || "Gagal membuat email.";
-              messageDiv.style.color = "red";
+                } else {
+                    messageDiv.textContent = data.message || 'Gagal membuat email.';
+                    messageDiv.style.color = 'red';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                 messageDiv.textContent = 'Terjadi kesalahan.';
+                messageDiv.style.color = 'red';
             }
-
-          } catch (error){
-            console.error("Error:", error);
-            messageDiv.textContent = "Terjadi kesalahan saat membuat email.";
-            messageDiv.style.color = "red";
-          }
-
         }
 
         async function fetchEmails() {
@@ -183,18 +246,18 @@
                 if (response.ok) {
                     emailsDiv.innerHTML = '';
                     if (data.length === 0) {
-                        emailsDiv.innerHTML = "<p>Belum ada email masuk.</p>";
+                        emailsDiv.innerHTML = '<p>Belum ada email masuk.</p>';
                         return;
                     }
                     data.forEach(email => {
-                      const emailItem = document.createElement('div');
-                      emailItem.classList.add('emailItem');
-                      emailItem.innerHTML = `
-                        <strong>Dari: ${email.from}</strong>
-                        <strong>Subjek: ${email.subject}</strong>
-                        <p>${email.body}</p>
-                    `;
-                      emailsDiv.appendChild(emailItem);
+                        const emailItem = document.createElement('div');
+                        emailItem.classList.add('emailItem');
+                        emailItem.innerHTML = `
+                            <strong>Dari: ${email.from}</strong>
+                            <strong>Subjek: ${email.subject}</strong>
+                            <p>${email.body}</p>
+                        `;
+                        emailsDiv.appendChild(emailItem);
                     });
                 } else {
                   messageDiv.textContent = data.message || "Gagal mengambil email";
@@ -203,21 +266,19 @@
 
             } catch (error) {
               console.error("Error fetching emails", error);
-              messageDiv.textContent = "Terjadi kesalahan saat mengambil email.";
+               messageDiv.textContent = "Terjadi kesalahan saat mengambil email.";
               messageDiv.style.color = "red";
             }
         }
 
-
-
         function updateTimer() {
           const now = Date.now();
-          const timeLeft = expirationTime - now;
+            const timeLeft = expirationTime - now;
 
             if (timeLeft <= 0) {
                 clearInterval(timerInterval);
                 timerDiv.textContent = "Email telah kedaluwarsa. Membuat email baru...";
-                createNewEmail(); // Buat email baru secara otomatis
+                createNewEmail(); // Buat email baru
                 return;
             }
 
@@ -229,24 +290,38 @@
         }
 
 
-
         copyButton.addEventListener('click', () => {
             navigator.clipboard.writeText(currentEmailAddress)
-                .then(() => {
-                    messageDiv.textContent = "Email berhasil disalin!";
-                    messageDiv.style.color = "green";
-                    setTimeout(()=>{messageDiv.textContent = '';}, 3000)
+            .then(() => {
+                messageDiv.textContent = "Email berhasil disalin!";
+                messageDiv.style.color = 'green';
+                setTimeout(() => { messageDiv.textContent = ''; }, 3000);
+            })
+            .catch(err => {
+                messageDiv.textContent = 'Gagal menyalin email.';
+                messageDiv.style.color = 'red';
+                console.error('Gagal menyalin: ', err);
+            });
+        });
 
-                })
-                .catch(err => {
-                    messageDiv.textContent = "Gagal menyalin email.";
-                    messageDiv.style.color = "red";
-                    console.error('Gagal menyalin: ', err);
-                });
+        refreshButton.addEventListener('click', fetchEmails);
+
+        openChatButton.addEventListener('click', () => {
+            // Mulai chat dengan admin
+            socket.emit('start-chat', currentEmailAddress);
+        });
+
+        sendButton.addEventListener('click', () => {
+            const text = chatInput.value.trim();
+            if (text && chatId) {
+                socket.emit('chat-message', { chatId, text });
+                chatInput.value = ''; // Kosongkan input
+            }
         });
 
         // Buat email baru saat halaman dimuat
         createNewEmail();
+
     </script>
 </body>
 </html>
