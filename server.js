@@ -2,8 +2,6 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const url = require('url');
-
-const hostname = '127.0.0.1';
 const port = 3000;
 const tld = 'wanzofc.us.kg'; // Ganti dengan TLD Anda
 const apiToken = 'jsC-4c5SlT1GKESV7qzVf4sSYYgV9g-HrQvaNoHg'; // API Token
@@ -131,5 +129,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`);
+    console.log(`Server running at http://${port}/`);
 });
